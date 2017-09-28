@@ -1,0 +1,13 @@
+*.swp
+*.egg-info
+__pycache__
+.eggs
+.tox
+*.rar
+*.dem
+AUTHORS
+ChangeLog
+protobufs/
+*.c
+*.h
+*.so
