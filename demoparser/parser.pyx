@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 from demoparser import consts
 from demoparser.protobufs import netmessages_pb2
+from demoparser.protobufs import cstrike15_usermessages_pb2 as um
 from demoparser.demofile import DemoFile
 from demoparser.entities import EntityList
 from demoparser.props cimport PropFlags
@@ -47,6 +48,7 @@ cdef class DemoParser:
     cdef object callbacks
     cdef dict internal_callbacks
     cdef dict merged_enums
+    cdef dict user_messages
     cdef unsigned int server_class_bits
 
     def __cinit__(self, str demofile):
@@ -54,6 +56,9 @@ cdef class DemoParser:
         self.merged_enums = {
             v[1]: v[0] for v in netmessages_pb2.NET_Messages.items() +
             netmessages_pb2.SVC_Messages.items()
+        }
+        self.user_messages = {
+            v[1]: v[0] for v in um.ECstrike15UserMessages.items()
         }
         self.current_tick = 0
         self.data_tables = []
@@ -70,6 +75,7 @@ cdef class DemoParser:
             'svc_CreateStringTable': [self._create_string_table],
             'svc_UpdateStringTable': [self._update_string_table],
             'svc_PacketEntities': [self._handle_packet_entities],
+            'svc_UserMessage': [self.handle_user_message],
             'string_table_update': [self._table_updated]
         }
 
@@ -117,6 +123,16 @@ cdef class DemoParser:
             else:
                 raise Exception("Unrecognized command")
 
+    cdef void handle_user_message(self, object msg):
+        um_class = self.user_messages[msg.msg_type]
+        class_name = 'CCSUsrMsg_{}'.format(um_class[6:])
+
+        user_message = getattr(um, class_name)()
+        user_message.ParseFromString(msg.msg_data)
+
+        self._fire_event(um_class[6:], [user_message])
+
+
     cdef void _handle_packet_entities(self, object msg):
         cdef unsigned int i = 0
         cdef int entity_idx = -1
@@ -162,6 +178,7 @@ cdef class DemoParser:
 
         for cmd, size, data in self.demofile.read_packet_data():
             cls = self._class_by_net_message_type(cmd)()
+
             cls.ParseFromString(data)
             self._fire_event(self.merged_enums[cmd], [cls])
 
@@ -373,6 +390,7 @@ cdef class DemoParser:
         class_name = 'C{}Msg_{}'.format(enum_type.upper(), enum_name)
 
         return getattr(netmessages_pb2, class_name)
+
 
     cdef object _class_by_message_name(self, str name):
         enum_type = name[:3]

@@ -42,7 +42,6 @@ class EntityList(MutableSequence):
             self._entities[index] = None
 
         baseline = self.parser.instance_baselines[class_id]
-        print(baseline.keys())
         cls = BaseEntity
 
         if baseline:
