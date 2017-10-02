@@ -1,4 +1,5 @@
 from suitcase.structure import Structure
+from suitcase.fields import FieldArray
 from suitcase.fields import Magic
 from suitcase.fields import SubstructureField
 from suitcase.fields import UBInt8Sequence
@@ -47,9 +48,9 @@ class Vector(Structure):
 
 
 class OriginViewAngles(Structure):
-    view_origin = Vector()
-    view_angles = QAngle()
-    local_view_angles = QAngle()
+    view_origin = SubstructureField(Vector)
+    view_angles = SubstructureField(QAngle)
+    local_view_angles = SubstructureField(QAngle)
 
 
 class SplitCommandInfo(Structure):
@@ -59,8 +60,7 @@ class SplitCommandInfo(Structure):
 
 
 class CommandInfo(Structure):
-    command_1 = SplitCommandInfo
-    command_2 = SplitCommandInfo
+    commands = FieldArray(SplitCommandInfo)
 
 
 class UserInfo(Structure):

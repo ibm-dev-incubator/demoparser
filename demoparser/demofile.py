@@ -3,7 +3,6 @@ import struct
 
 from demoparser.structures import DemoHeader
 from demoparser.structures import CommandHeader
-# from cheeseshop.demoparser.structures import CommandInfo
 
 
 class DemoFile:
@@ -15,9 +14,10 @@ class DemoFile:
         return CommandHeader.from_data(self.data.read(6))
 
     def read_command_data(self):
-        data = self.data.read(152)
-        return data
-        # return CommandInfo.from_data(data)
+        # This data fits the structure described in
+        # structures.py:CommandInfo. This data seems to always
+        # be all 0s though.
+        self.data.read(152)
 
     def read_sequence_data(self):
         return struct.unpack("<ii", self.data.read(8))
