@@ -18,8 +18,8 @@ extensions = [
         ["demoparser/bitbuffer.pyx"]
     ),
     Extension(
-        "demoparser.parser",
-        ["demoparser/parser.pyx"]
+        "demoparser.demofile",
+        ["demoparser/demofile.pyx"]
     ),
 ]
 setup(

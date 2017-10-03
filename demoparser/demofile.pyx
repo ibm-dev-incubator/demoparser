@@ -1,5 +1,6 @@
 # cython: profile=True
 from demoparser.bitbuffer cimport Bitbuffer
+from demoparser.bytebuffer import Bytebuffer
 from libc cimport math
 
 from collections import defaultdict
@@ -9,18 +10,20 @@ from collections import OrderedDict
 from demoparser import consts
 from demoparser.protobufs import netmessages_pb2
 from demoparser.protobufs import cstrike15_usermessages_pb2 as um
-from demoparser.demofile import DemoFile
 from demoparser.entities import EntityList
 from demoparser.props cimport PropFlags
 from demoparser.props cimport PropTypes
 from demoparser.structures import UserInfo
+from demoparser.structures import DemoHeader
 
 from demoparser.util cimport parse_entity_update
+
 
 cdef bint _key_sort(dict item):
     if item.get('collapsible', True) is False:
         return 0
     return 1
+
 
 cdef enum DemoCommand:
     SIGNON = 1
@@ -34,9 +37,8 @@ cdef enum DemoCommand:
     STRINGTABLES = 9
 
 
-cdef class DemoParser:
+cdef class DemoFile:
 
-    cdef object demofile
     cdef public unsigned int current_tick
     cdef list data_tables
     cdef list string_tables
@@ -50,9 +52,13 @@ cdef class DemoParser:
     cdef dict merged_enums
     cdef dict user_messages
     cdef unsigned int server_class_bits
+    cdef object byte_buf
+    cdef object header
 
-    def __cinit__(self, str demofile):
-        self.demofile = DemoFile(demofile)
+    def __cinit__(self, bytes data):
+        self.header = DemoHeader.from_data(data[:1072])
+        self.byte_buf = Bytebuffer(data[1072:])
+
         self.merged_enums = {
             v[1]: v[0] for v in netmessages_pb2.NET_Messages.items() +
             netmessages_pb2.SVC_Messages.items()
@@ -94,9 +100,9 @@ cdef class DemoParser:
     cpdef add_callback(self, event, func):
         self.callbacks[event].append(func)
 
-    cpdef void parse(self):
+    cpdef void parse(self) except *:
         while True:
-            header = self.demofile.read_command_header()
+            header = self.byte_buf.read_command_header()
             if header.tick != self.current_tick:
                 self._fire_event('tick_end', [self.current_tick])
                 self.current_tick = header.tick
@@ -107,9 +113,9 @@ cdef class DemoParser:
             elif header.command == DemoCommand.SYNCTICK:
                 continue
             elif header.command == DemoCommand.CONSOLECMD:
-                length, buf = self.demofile.read_raw_data()
+                length, buf = self.byte_buf.read_raw_data()
             elif header.command == DemoCommand.USERCMD:
-                self.demofile.read_user_command()
+                self.byte_buf.read_user_command()
             elif header.command == DemoCommand.DATATABLES:
                 self._handle_data_table(header)
             elif header.command == DemoCommand.CUSTOMDATA:
@@ -131,7 +137,6 @@ cdef class DemoParser:
         user_message.ParseFromString(msg.msg_data)
 
         self._fire_event(um_class[6:], [user_message])
-
 
     cdef void _handle_packet_entities(self, object msg):
         cdef unsigned int i = 0
@@ -173,26 +178,26 @@ cdef class DemoParser:
 
     cdef void _handle_demo_packet(self, cmd_header):
 
-        self.demofile.read_command_data()
-        self.demofile.read_sequence_data()
+        self.byte_buf.read_command_data()
+        self.byte_buf.read_sequence_data()
 
-        for cmd, size, data in self.demofile.read_packet_data():
+        for cmd, size, data in self.byte_buf.read_packet_data():
             cls = self._class_by_net_message_type(cmd)()
 
             cls.ParseFromString(data)
             self._fire_event(self.merged_enums[cmd], [cls])
 
-    cdef void _handle_data_table(self, cmd_header):
+    cdef void _handle_data_table(self, cmd_header) except *:
         cdef unsigned int i = 0
         # Size of entire data table chunk
-        self.demofile.data.read(4)
+        self.byte_buf.read(4)
         table = self._class_by_message_name('svc_SendTable')
 
         while True:
             # Type of table, not needed for now
-            self.demofile.read_varint()
+            self.byte_buf.read_varint()
 
-            data = self.demofile.read_var_bytes()
+            data = self.byte_buf.read_var_bytes()
 
             msg = table()
             msg.ParseFromString(data)
@@ -201,17 +206,17 @@ cdef class DemoParser:
 
             self.data_tables.append(msg)
 
-        server_classes = self.demofile.read_short()
+        server_classes = self.byte_buf.read_short()
         self.server_class_bits = <unsigned int>math.ceil(
             math.log2(server_classes)
         )
 
         for i in range(server_classes):
-            class_id = self.demofile.read_short()
+            class_id = self.byte_buf.read_short()
             assert class_id == i
 
-            name = self.demofile.read_string()
-            table_name = self.demofile.read_string()
+            name = self.byte_buf.read_string()
+            table_name = self.byte_buf.read_string()
 
             dt = self._data_table_by_name(table_name)
 
@@ -316,7 +321,7 @@ cdef class DemoParser:
             )
 
     cdef void _handle_string_tables(self, object cmd_header):
-        cdef Bitbuffer buf = self.demofile.read_bitstream()
+        cdef Bitbuffer buf = self.byte_buf.read_bitstream()
         cdef unsigned char num_tables = buf.read_uint_bits(8)
         cdef unsigned char i = 0
 
@@ -390,7 +395,6 @@ cdef class DemoParser:
         class_name = 'C{}Msg_{}'.format(enum_type.upper(), enum_name)
 
         return getattr(netmessages_pb2, class_name)
-
 
     cdef object _class_by_message_name(self, str name):
         enum_type = name[:3]

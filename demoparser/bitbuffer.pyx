@@ -6,41 +6,43 @@ from libc.math cimport ceil
 
 from demoparser import consts
 
+
 cdef unsigned int[33] mask_table = [
-        0,
-        ( 1 << 1 ) - 1,
-        ( 1 << 2 ) - 1,
-        ( 1 << 3 ) - 1,
-        ( 1 << 4 ) - 1,
-        ( 1 << 5 ) - 1,
-        ( 1 << 6 ) - 1,
-        ( 1 << 7 ) - 1,
-        ( 1 << 8 ) - 1,
-        ( 1 << 9 ) - 1,
-        ( 1 << 10 ) - 1,
-        ( 1 << 11 ) - 1,
-        ( 1 << 12 ) - 1,
-        ( 1 << 13 ) - 1,
-        ( 1 << 14 ) - 1,
-        ( 1 << 15 ) - 1,
-        ( 1 << 16 ) - 1,
-        ( 1 << 17 ) - 1,
-        ( 1 << 18 ) - 1,
-        ( 1 << 19 ) - 1,
-        ( 1 << 20 ) - 1,
-        ( 1 << 21 ) - 1,
-        ( 1 << 22 ) - 1,
-        ( 1 << 23 ) - 1,
-        ( 1 << 24 ) - 1,
-        ( 1 << 25 ) - 1,
-        ( 1 << 26 ) - 1,
-        ( 1 << 27 ) - 1,
-        ( 1 << 28 ) - 1,
-        ( 1 << 29 ) - 1,
-        ( 1 << 30 ) - 1,
-        0x7fffffff,
-        0xffffffff,
+    0,
+    ( 1 << 1 ) - 1,
+    ( 1 << 2 ) - 1,
+    ( 1 << 3 ) - 1,
+    ( 1 << 4 ) - 1,
+    ( 1 << 5 ) - 1,
+    ( 1 << 6 ) - 1,
+    ( 1 << 7 ) - 1,
+    ( 1 << 8 ) - 1,
+    ( 1 << 9 ) - 1,
+    ( 1 << 10 ) - 1,
+    ( 1 << 11 ) - 1,
+    ( 1 << 12 ) - 1,
+    ( 1 << 13 ) - 1,
+    ( 1 << 14 ) - 1,
+    ( 1 << 15 ) - 1,
+    ( 1 << 16 ) - 1,
+    ( 1 << 17 ) - 1,
+    ( 1 << 18 ) - 1,
+    ( 1 << 19 ) - 1,
+    ( 1 << 20 ) - 1,
+    ( 1 << 21 ) - 1,
+    ( 1 << 22 ) - 1,
+    ( 1 << 23 ) - 1,
+    ( 1 << 24 ) - 1,
+    ( 1 << 25 ) - 1,
+    ( 1 << 26 ) - 1,
+    ( 1 << 27 ) - 1,
+    ( 1 << 28 ) - 1,
+    ( 1 << 29 ) - 1,
+    ( 1 << 30 ) - 1,
+    0x7fffffff,
+    0xffffffff,
 ]
+
 
 cdef class Bitbuffer:
 
@@ -117,7 +119,7 @@ cdef class Bitbuffer:
             bits -= self.bits_avail
             self.next_dword()
 
-            ret |=  ((self.in_buf_word & mask_table[bits]) << self.bits_avail)
+            ret |= ((self.in_buf_word & mask_table[bits]) << self.bits_avail)
             self.bits_avail = 32 - bits
             self.in_buf_word >>= bits
 
@@ -211,7 +213,7 @@ cdef class Bitbuffer:
         return -value if sign_bit else value
 
     cdef float read_bit_cell_coord(self, unsigned int bits,
-            unsigned int coord_type):
+                                   unsigned int coord_type):
 
         cdef bint low_precision = (coord_type == consts.CW_LowPrecision)
         cdef float value = 0.0

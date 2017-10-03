@@ -1,49 +1,56 @@
 from demoparser.bitbuffer import Bitbuffer
 import struct
 
-from demoparser.structures import DemoHeader
 from demoparser.structures import CommandHeader
 
 
-class DemoFile:
-    def __init__(self, demofile):
-        self.data = open(demofile, 'rb')
-        self.header = DemoHeader.from_data(self.data.read(1072))
+class Bytebuffer:
+
+    def __init__(self, data):
+        self.data = data
+        self.index = 0
+
+    def read(self, num_bytes):
+        d = self.data[self.index:self.index + num_bytes]
+        self.index += num_bytes
+        return d
 
     def read_command_header(self):
-        return CommandHeader.from_data(self.data.read(6))
+        return CommandHeader.from_data(self.read(6))
 
     def read_command_data(self):
         # This data fits the structure described in
         # structures.py:CommandInfo. This data seems to always
-        # be all 0s though.
-        self.data.read(152)
+        # be all 0s though. It doesn't appear to be very useful
+        # and it is very expensive to create one of these structures
+        # for each message.
+        self.read(152)
 
     def read_sequence_data(self):
-        return struct.unpack("<ii", self.data.read(8))
+        return struct.unpack("<ii", self.read(8))
 
     def read_user_command(self):
-        seq = struct.unpack("<i", self.data.read(4))[0]
+        seq = struct.unpack("<i", self.read(4))[0]
         length, buf = self.read_raw_data()
 
         return seq
 
     def read_packet_data(self):
-        length = struct.unpack("<i", self.data.read(4))[0]
+        length = struct.unpack("<i", self.read(4))[0]
 
         index = 0
         while index < length:
             cmd = self.read_varint()
             size = self.read_varint()
-            data = self.data.read(size)
+            data = self.read(size)
             index = index + size + \
                 self._varint_size(cmd) + self._varint_size(size)
 
             yield cmd, size, data
 
     def read_raw_data(self):
-        length = struct.unpack("<i", self.data.read(4))[0]
-        buf = self.data.read(length)
+        length = struct.unpack("<i", self.read(4))[0]
+        buf = self.read(length)
 
         return length, buf
 
@@ -54,12 +61,12 @@ class DemoFile:
     def read_var_bytes(self):
         length = self.read_varint()
 
-        return self.data.read(length)
+        return self.read(length)
 
     def read_string(self):
         output = []
         while True:
-            char = struct.unpack("B", self.data.read(1))[0]
+            char = struct.unpack("B", self.read(1))[0]
             if char == 0:
                 break
 
@@ -74,7 +81,7 @@ class DemoFile:
 
         cont = True
         while cont:
-            data = self.data.read(1)
+            data = self.read(1)
             b = struct.unpack("B", data)
             b = b[0]
             if count < 5:
@@ -84,7 +91,7 @@ class DemoFile:
         return result
 
     def read_short(self):
-        return struct.unpack("H", self.data.read(2))[0]
+        return struct.unpack("H", self.read(2))[0]
 
     def _varint_size(self, value):
         if (value < 1 << 7):

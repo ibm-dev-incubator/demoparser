@@ -1,6 +1,6 @@
 import sys
 
-from demoparser.parser import DemoParser
+from demoparser.demofile import DemoFile
 
 
 color_map = {
@@ -61,7 +61,8 @@ def game_chat(msg):
 
 
 if __name__ == "__main__":
-    d = DemoParser(sys.argv[1])
+    data = open(sys.argv[1], 'rb').read()
+    d = DemoFile(data)
     d.add_callback('SayText', server_text)
     d.add_callback('SayText2', game_chat)
     d.parse()
