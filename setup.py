@@ -11,7 +11,7 @@ extensions = [
     ),
     Extension(
         "demoparser.props",
-        ["demoparser/props.pyx"]
+        ["demoparser/props.pyx"],
     ),
     Extension(
         "demoparser.bitbuffer",
@@ -22,8 +22,11 @@ extensions = [
         ["demoparser/demofile.pyx"]
     ),
 ]
+
 setup(
     setup_requires=['pbr>=1.9', 'setuptools>=17.1'],
     pbr=True,
-    ext_modules=cythonize(extensions)
+    ext_modules=cythonize(
+        extensions, compiler_directives={"embedsignature": True}
+    )
 )

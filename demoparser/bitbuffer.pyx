@@ -68,8 +68,11 @@ cdef class Bitbuffer:
         self.bits_avail = 32
         self.next_dword()
 
-    cdef unsigned int next_dword(self):
-        """Move to the next 32-bit integer in the stream."""
+    cpdef unsigned int next_dword(self):
+        """Move to the next 32-bit integer in the stream.
+
+        :returns: unsigned int
+        """
         if self.index == self.length:
             self.bits_avail = 1
             self.in_buf_word = 0
@@ -81,8 +84,11 @@ cdef class Bitbuffer:
                 self.in_buf_word = self.data[self.index]
                 self.index += 1
 
-    cdef unsigned char read_bit(self):
-        """Reads a single bit."""
+    cpdef unsigned char read_bit(self):
+        """Read a single bit.
+
+        :returns: one bit
+        """
         cdef unsigned char ret = self.in_buf_word & 1
         self.bits_avail -= 1
 
@@ -94,11 +100,15 @@ cdef class Bitbuffer:
 
         return ret
 
-    cdef unsigned int read_uint_bits(self, unsigned int bits):
-        """Reads the unsigned integer represented by `bits` bits.
+    cpdef unsigned int read_uint_bits(self, unsigned int bits):
+        """Read the unsigned integer represented by `bits` bits.
 
         If the number of bits remaining in the current word is
         not enough then the next word will be read.
+
+        :param bits: Number of bits to read
+        :type bits: unsigned int
+        :returns: unsigned int
         """
         cdef unsigned int ret = self.in_buf_word & mask_table[bits]
 
@@ -125,18 +135,25 @@ cdef class Bitbuffer:
 
         return ret
 
-    cdef int read_sint_bits(self, unsigned int bits):
-        """Reads a signed integer of `bits` bits.
+    cpdef int read_sint_bits(self, unsigned int bits):
+        """Read a signed integer of `bits` bits.
 
         First an unsigned integer is read then a two's complement
         integer is computed.
+
+        :param bits: Number of bits to read
+        :type bits: unsigned int
+        :returns: int
         """
         cdef unsigned int ret = self.read_uint_bits(bits)
         cdef unsigned int mask = 2 << (bits - 2)
         return -(ret & mask) + (ret & ~mask)
 
-    cdef unsigned int read_var_int(self):
-        """Reads a variable length integer."""
+    cpdef unsigned int read_var_int(self):
+        """Read a variable length integer.
+
+        :returns: unsigned int
+        """
         cdef unsigned int num = self.read_uint_bits(6)
         cdef unsigned char bits = num & (16 | 32)
 
@@ -152,16 +169,17 @@ cdef class Bitbuffer:
 
         return num
 
-    cdef str read_string(self, int length=-1):
-        """Reads a string.
+    cpdef str read_string(self, int length=-1):
+        r"""Read a string.
 
         If length is not provided characters are read until
-        \0 is reached. If length is provided then exactly
+        \\0 is reached. If length is provided then exactly
         length bytes will be read and the string may not be
         zero-terminated.
+
+        :returns: str
         """
         cdef char c
-        cdef bytes x
         cdef bint append = True
         cdef int index = 1
         ret = []
@@ -182,14 +200,22 @@ cdef class Bitbuffer:
 
         return array.array('b', ret).tobytes().decode('utf-8')
 
-    cdef float read_bit_normal(self):
+    cpdef float read_bit_normal(self):
         cdef bint sign_bit = self.read_bit()
+        """Read a float normal.
+
+        :returns: float value between -1.0 and 1.0
+        """
         cdef int frac = self.read_uint_bits(consts.NORMAL_FRACTIONAL_BITS)
         cdef float value = frac * consts.NORMAL_RESOLUTION
 
         return -value if sign_bit else value
 
-    cdef float read_bit_coord(self):
+    cpdef float read_bit_coord(self):
+        """Read a float and treat as a world coordinate.
+
+        :returns: float
+        """
         cdef bint integer = self.read_bit()
         cdef bint fraction = self.read_bit()
         cdef bint sign_bit = 0
@@ -212,8 +238,20 @@ cdef class Bitbuffer:
 
         return -value if sign_bit else value
 
-    cdef float read_bit_cell_coord(self, unsigned int bits,
-                                   unsigned int coord_type):
+    cpdef float read_bit_cell_coord(self, unsigned int bits,
+                                    unsigned int coord_type):
+        """Read a cell coordinate.
+
+        A cell coordinate is a float which has been
+        compressed. The number of bits indicates maximum
+        value.
+
+        :param bits: number of bits to read
+        :type bits: unsigned int
+        :param coord_type: level of precision
+        :type coord_type: unsigned int
+        :returns: float
+        """
 
         cdef bint low_precision = (coord_type == consts.CW_LowPrecision)
         cdef float value = 0.0
@@ -241,7 +279,13 @@ cdef class Bitbuffer:
 
         return value
 
-    cdef bytes read_user_data(self, unsigned int bits):
+    cpdef bytes read_user_data(self, unsigned int bits):
+        """Read user data.
+
+        :param bits: Number of bits to read
+        :type bits: unsigned int
+        :returns: bytes
+        """
         cdef unsigned int entries = int(ceil(bits / 8.0))
         cdef array.array[unsigned char] ret = array.array('B', [0] * entries)
         cdef unsigned int arr_idx = 0

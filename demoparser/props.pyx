@@ -15,30 +15,39 @@ cdef class Decoder:
         self.prop = prop['prop']
         self.flags = self.prop.flags
 
-    cdef object decode(self):
+    cpdef object decode(self):
         assert self.prop.type != PropTypes.DPT_DataTable
         cdef unsigned char prop_type = self.prop.type
 
         if prop_type == PropTypes.DPT_Int:
-            ret = self._decode_int()
+            ret = self.decode_int()
         elif prop_type == PropTypes.DPT_Float:
-            ret = self._decode_float()
+            ret = self.decode_float()
         elif prop_type == PropTypes.DPT_Vector:
-            ret = self._decode_vector()
+            ret = self.decode_vector()
         elif prop_type == PropTypes.DPT_VectorXY:
-            ret = self._decode_vector_xy()
+            ret = self.decode_vector_xy()
         elif prop_type == PropTypes.DPT_String:
-            ret = self._decode_string()
+            ret = self.decode_string()
         elif prop_type == PropTypes.DPT_Int64:
-            ret = self._decode_int64()
+            ret = self.decode_int64()
         elif prop_type == PropTypes.DPT_Array:
-            ret = self._decode_array()
+            ret = self.decode_array()
         else:
             raise Exception("Unsupported prop type")
 
         return ret
 
-    cdef long _decode_int(self):
+    cpdef long decode_int(self):
+        """Decode an integer.
+
+        Reads the number of bits specified in the
+        num_bits field of the property. If the property
+        has the SPROP_UNSIGNED flag set the number will be
+        read as an unsigned int.
+
+        :returns: long
+        """
         cdef long ret
         cdef int num_bits = self.prop.num_bits
 
@@ -52,8 +61,8 @@ cdef class Decoder:
         return ret
 
     @cython.cdivision(True)
-    cdef float _decode_float(self):
-        cdef float special = self._decode_special_float()
+    cpdef float decode_float(self):
+        cdef float special = self.decode_special_float()
         if not isnan(special):
             return special
 
@@ -69,15 +78,19 @@ cdef class Decoder:
 
         return val
 
-    cdef dict _decode_vector(self):
+    cpdef dict decode_vector(self):
+        """Decode a vector.
+
+        :returns: vector
+        """
         cdef bint sign
         cdef float sum_sqr, x, y, z
 
-        x = self._decode_float()
-        y = self._decode_float()
+        x = self.decode_float()
+        y = self.decode_float()
 
         if (self.flags & PropFlags.SPROP_NORMAL) == 0:
-            z = self._decode_float()
+            z = self.decode_float()
         else:
             sign = self.buf.read_bit()
             sum_sqr = (x * x) + (y * y)
@@ -95,27 +108,46 @@ cdef class Decoder:
             'z': z
         }
 
-    cdef dict _decode_vector_xy(self):
+    cpdef dict decode_vector_xy(self):
+        """Decode a two-element vector.
+
+        This only reads the X and Y coordinates for
+        the vector and sets the Z coordinate to 0.0
+
+        :returns: vector
+        """
         cdef float x, y
-        x = self._decode_float()
-        y = self._decode_float()
+        x = self.decode_float()
+        y = self.decode_float()
         return {
             'x': x,
             'y': y,
             'z': 0.0
         }
 
-    cdef str _decode_string(self):
+    cpdef str decode_string(self):
+        r"""Decode a string.
+
+        A fixed number of bits are read which may be
+        more than the string's length (i.e. some bits
+        are read after a \0 is encountered).
+
+        :returns: str
+        """
         cdef unsigned int length = self.buf.read_uint_bits(9)
         if not length:
             return ""
         string = self.buf.read_string(length)
         return string
 
-    def _decode_int64(self):
+    def decode_int64(self):
+        """Decode a 64-bit integer.
+
+        CS:GO demos don't appear to contain 64-bit ints.
+        """
         assert False, 'int64'
 
-    cdef list _decode_array(self):
+    cpdef list decode_array(self):
         cdef unsigned int bits, idx, num_elements
 
         max_elements = self.prop.num_elements
@@ -130,7 +162,46 @@ cdef class Decoder:
 
         return elements
 
-    cdef float _decode_special_float(self):
+    cpdef float decode_special_float(self):
+        """Decode a float
+
+        A special float is a float which is interpreted in
+        some special way. The treatement is determined by
+        the property's flags.
+
+        +-------------------------+--------------------------------------+
+        | Flag                    | Explanation                          |
+        +=========================+======================================+
+        | COORD                   | Treat the float or vector as a world |
+        |                         | coordinate.                          |
+        +-------------------------+--------------------------------------+
+        | COORD_MP                | Like COORD but special handling for  |
+        |                         | multi-player games.                  |
+        +-------------------------+--------------------------------------+
+        | COORD_MP_LOWPRECISION   | Like COORD_MP but the fractional     |
+        |                         | component uses 3 bits instead of 5.  |
+        +-------------------------+--------------------------------------+
+        | COORD_MP_INTEGRAL       | Like COORD_MP but coordinates are    |
+        |                         | rounded to integral boundaries.      |
+        +-------------------------+--------------------------------------+
+        | NOSCALE                 | Don't scale floating-point value to  |
+        |                         | a range.                             |
+        +-------------------------+--------------------------------------+
+        | NORMAL                  | Treat vector as a normal.            |
+        +-------------------------+--------------------------------------+
+        | CELL_COORD              | Like COORD but has special encoding  |
+        |                         | for cell coordinates which can't be  |
+        |                         | negative.                            |
+        +-------------------------+--------------------------------------+
+        | CELL_COORD_LOWPRECISION | Like CELL_COORD but fractional part  |
+        |                         | uses 3 bits instead of 5.            |
+        +-------------------------+--------------------------------------+
+        | CELL_COORD_INTEGRAL     | Like CELL_COORD but coordinates are  |
+        |                         | rounded to integral boundaries.      |
+        +-------------------------+--------------------------------------+
+
+        :returns: float
+        """
         cdef float val = NAN
         cdef unsigned int f
         cdef unsigned int flags = self.flags

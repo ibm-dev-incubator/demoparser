@@ -7,14 +7,14 @@ cdef class Decoder:
     cdef long flags
 
     # Methods
-    cdef object decode(self)
-    cdef long _decode_int(self)
-    cdef float _decode_float(self)
-    cdef dict _decode_vector(self)
-    cdef dict _decode_vector_xy(self)
-    cdef str _decode_string(self)
-    cdef list _decode_array(self)
-    cdef float _decode_special_float(self)
+    cpdef object decode(self)
+    cpdef long decode_int(self)
+    cpdef float decode_float(self)
+    cpdef dict decode_vector(self)
+    cpdef dict decode_vector_xy(self)
+    cpdef str decode_string(self)
+    cpdef list decode_array(self)
+    cpdef float decode_special_float(self)
 
 cdef enum PropTypes:
     DPT_Int = 0

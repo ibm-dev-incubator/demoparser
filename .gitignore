@@ -11,3 +11,4 @@ protobufs/
 *.c
 *.h
 *.so
+doc/_build

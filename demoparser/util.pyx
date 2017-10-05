@@ -4,7 +4,14 @@ from demoparser.props cimport Decoder
 from demoparser.props cimport PropFlags
 from demoparser.props cimport PropTypes
 
-cdef int read_field_index(Bitbuffer buf, int last_index, bint new_way):
+cpdef int read_field_index(Bitbuffer buf, int last_index, bint new_way):
+    """Read index.
+
+    This method determines the next index into the property
+    list for server class.
+
+    :returns: Next index or -1 if no more indices
+    """
     cdef int ret = 0
     cdef unsigned int val = 0
 
@@ -33,7 +40,16 @@ cdef int read_field_index(Bitbuffer buf, int last_index, bint new_way):
     return last_index + 1 + ret
 
 
-cdef list parse_entity_update(Bitbuffer buf, object server_class):
+cpdef list parse_entity_update(Bitbuffer buf, object server_class):
+    """Parse entity updates.
+
+    First a list of all property indices is generated. For each
+    property referenced by those indices the property's value is
+    decoded. The list of properties and their decoded values are
+    collected and returned.
+
+    :returns: List of updated properties
+    """
     cdef bint new_way
     cdef int val = -1
     cdef Decoder decoder

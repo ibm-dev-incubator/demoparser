@@ -16,7 +16,7 @@ class Player(BaseEntity):
         ]
 
     def _get_user_info(self):
-        users = self.parser._table_by_name('userinfo')['entries']
+        users = self.parser.table_by_name('userinfo')['entries']
         return users[self.slot]['user_data']
 
     @property

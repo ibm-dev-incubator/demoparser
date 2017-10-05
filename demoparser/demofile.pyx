@@ -75,41 +75,47 @@ cdef class DemoFile:
         self.instance_baselines = OrderedDict()
         self.entities = EntityList(self)
         self.callbacks = defaultdict(list)
-        self.internal_callbacks = {
-            'svc_GameEventList': [self._handle_game_event_list],
-            'svc_GameEvent': [self._handle_game_event],
-            'svc_CreateStringTable': [self._create_string_table],
-            'svc_UpdateStringTable': [self._update_string_table],
-            'svc_PacketEntities': [self._handle_packet_entities],
+        self.callbacks.update({
+            'svc_GameEventList': [self.handle_game_event_list],
+            'svc_GameEvent': [self.handle_game_event],
+            'svc_CreateStringTable': [self.create_string_table],
+            'svc_UpdateStringTable': [self.update_string_table],
+            'svc_PacketEntities': [self.handle_packet_entities],
             'svc_UserMessage': [self.handle_user_message],
-            'string_table_update': [self._table_updated]
-        }
+            'string_table_update': [self.table_updated]
+        })
 
-    cdef void _fire_event(self, str event, args=None):
+    cpdef void fire_event(self, str event, args=None):
+        """Run callback functions for an event.
+
+        Each time an event is trigged each registered callback
+        will be called with the arguments provided to this method.
+
+        A separate set of internal callbacks is maintained because
+        they require a different calling method. Internal callbacks
+        are callbacks functions that belong to a DemoFile instance.
+        """
         if args is None:
             args = []
-
-        for func in self.internal_callbacks.get(event, []):
-            # cdef instance methods don't seem to include self
-            # when called this way.
-            func(self, *args)
 
         for func in self.callbacks.get(event, []):
             func(*args)
 
     cpdef add_callback(self, event, func):
+        """Register a callback function for an event."""
         self.callbacks[event].append(func)
 
-    cpdef void parse(self) except *:
+    cpdef void parse(self):
+        """Parse the demofile."""
         while True:
             header = self.byte_buf.read_command_header()
             if header.tick != self.current_tick:
-                self._fire_event('tick_end', [self.current_tick])
+                self.fire_event('tick_end', [self.current_tick])
                 self.current_tick = header.tick
-                self._fire_event('tick_start', [self.current_tick])
+                self.fire_event('tick_start', [self.current_tick])
 
             if header.command in (DemoCommand.SIGNON, DemoCommand.PACKET):
-                self._handle_demo_packet(header)
+                self.handle_demo_packet(header)
             elif header.command == DemoCommand.SYNCTICK:
                 continue
             elif header.command == DemoCommand.CONSOLECMD:
@@ -117,28 +123,44 @@ cdef class DemoFile:
             elif header.command == DemoCommand.USERCMD:
                 self.byte_buf.read_user_command()
             elif header.command == DemoCommand.DATATABLES:
-                self._handle_data_table(header)
+                self.handle_data_table(header)
             elif header.command == DemoCommand.CUSTOMDATA:
                 pass
             elif header.command == DemoCommand.STRINGTABLES:
-                self._handle_string_tables(header)
+                self.handle_string_tables(header)
             elif header.command == DemoCommand.STOP:
-                self._fire_event('tick_end', [self.current_tick])
-                self._fire_event('end')
+                self.fire_event('tick_end', [self.current_tick])
+                self.fire_event('end')
                 break
             else:
                 raise Exception("Unrecognized command")
 
-    cdef void handle_user_message(self, object msg):
+    cpdef void handle_user_message(self, object msg):
+        """Handle user message.
+
+        A user message is stuff like text chat,
+        voice chat, radio messages, etc.
+        """
         um_class = self.user_messages[msg.msg_type]
         class_name = 'CCSUsrMsg_{}'.format(um_class[6:])
 
         user_message = getattr(um, class_name)()
         user_message.ParseFromString(msg.msg_data)
 
-        self._fire_event(um_class[6:], [user_message])
+        self.fire_event(um_class[6:], [user_message])
 
-    cdef void _handle_packet_entities(self, object msg):
+    cpdef void handle_packet_entities(self, object msg):
+        """Create or update an entity.
+
+        Entities represent in-game objects and are networked (i.e.
+        their state is maintained on the server and updates are sent
+        to one or more clients).
+
+        Entities have a class ID which defines the type of entity
+        it is. The class ID is also used to find the correct
+        instance baseline. Instance baselines serve as default
+        values when entities are created.
+        """
         cdef unsigned int i = 0
         cdef int entity_idx = -1
         cdef Bitbuffer buf = Bitbuffer(msg.entity_data)
@@ -158,12 +180,17 @@ cdef class DemoFile:
                 new_entity = self.entities.new_entity(
                     entity_idx, class_id, serial
                 )
-                self._read_new_entity(buf, new_entity)
+                self.read_new_entity(buf, new_entity)
             else:
                 entity = self.entities[entity_idx]
-                self._read_new_entity(buf, entity)
+                self.read_new_entity(buf, entity)
 
-    cdef void _read_new_entity(self, Bitbuffer buf, object entity):
+    cpdef void read_new_entity(self, Bitbuffer buf, object entity):
+        """Read entity data.
+
+        A list of updates is computed and for each one of those
+        the appropritate property of the entity instance is updated.
+        """
         cdef object server_class = self.server_classes[entity.class_id]
         cdef list updates = parse_entity_update(buf, server_class)
 
@@ -171,27 +198,39 @@ cdef class DemoFile:
             table_name = update['prop']['table'].net_table_name
             var_name = update['prop']['prop'].var_name
 
-            self._fire_event(
+            self.fire_event(
                 'change', [entity, table_name, var_name, update['value']]
             )
             entity.update_prop(table_name, var_name, update['value'])
 
-    cdef void _handle_demo_packet(self, cmd_header):
+    cpdef void handle_demo_packet(self, cmd_header):
+        """Handle demo packet.
 
+        Demo packets are of type SVC\_ or NET\_. This method
+        instantiates the appropriate protobuf class and triggers
+        an event.
+        """
         self.byte_buf.read_command_data()
         self.byte_buf.read_sequence_data()
 
         for cmd, size, data in self.byte_buf.read_packet_data():
-            cls = self._class_by_net_message_type(cmd)()
+            cls = self.class_by_net_message_type(cmd)()
 
             cls.ParseFromString(data)
-            self._fire_event(self.merged_enums[cmd], [cls])
+            self.fire_event(self.merged_enums[cmd], [cls])
 
-    cdef void _handle_data_table(self, cmd_header) except *:
+    cpdef void handle_data_table(self, cmd_header):
+        """Create data tables.
+
+        Each entity class maintains a data table that describes
+        how to encode each of its properties. These tables are
+        called Send Tables and and genrally have names like
+        DT_EntityClassName (DT_CSPlayer, DT_Weapon, etc.)
+        """
         cdef unsigned int i = 0
         # Size of entire data table chunk
         self.byte_buf.read(4)
-        table = self._class_by_message_name('svc_SendTable')
+        table = self.class_by_message_name('svc_SendTable')
 
         while True:
             # Type of table, not needed for now
@@ -218,13 +257,13 @@ cdef class DemoFile:
             name = self.byte_buf.read_string()
             table_name = self.byte_buf.read_string()
 
-            dt = self._data_table_by_name(table_name)
+            dt = self.data_table_by_name(table_name)
 
             table = {
                 'class_id': class_id,
                 'name': name,
                 'table_name': table_name,
-                'props': self._flatten_data_table(dt)
+                'props': self.flatten_data_table(dt)
             }
             self.server_classes.append(table)
 
@@ -232,10 +271,10 @@ cdef class DemoFile:
             pending_baseline = self.pending_baselines.get(class_id)
             if pending_baseline:
                 self.instance_baselines[class_id] = \
-                    self._parse_instance_baseline(
+                    self.parse_instance_baseline(
                         pending_baseline, class_id
                 )
-                self._fire_event(
+                self.fire_event(
                     'baseline_update',
                     [class_id,
                      table,
@@ -243,19 +282,31 @@ cdef class DemoFile:
                 )
                 del self.pending_baselines[class_id]
 
-        self._fire_event('datatable_ready', [table])
+        self.fire_event('datatable_ready', [table])
 
-    cdef void _update_string_table(self, object msg):
+    cpdef void update_string_table(self, object msg):
         buf = Bitbuffer(msg.string_data)
 
         table = self.string_tables[msg.table_id]
 
-        self._parse_string_table_update(
+        self.parse_string_table_update(
             buf, table, msg.num_changed_entries, len(table['entries']),
             0, False
         )
 
-    cdef void _create_string_table(self, object msg):
+    cpdef void create_string_table(self, object msg):
+        """Create a string table.
+
+        A string table consists of a name and a list of entries.
+        The maximum number of entries is created and initialized
+        to None. This is done because future messages that update
+        or reference string table entries do so by index.
+
+        Each entry is a dictionary with two keys, entry and user_data.
+        Entry is the name of the entry and user_data contains binary
+        data related to the entry. In the 'user_info' string table
+        user_data describes a UserInfo object.
+        """
         cdef Bitbuffer buf = Bitbuffer(msg.string_data)
 
         table = {
@@ -263,15 +314,20 @@ cdef class DemoFile:
             'entries': [{'entry': None, 'user_data': None}] * msg.max_entries
         }
         self.string_tables.append(table)
-        self._parse_string_table_update(
+        self.parse_string_table_update(
             buf, table, msg.num_entries, msg.max_entries,
             msg.user_data_size_bits, msg.user_data_fixed_size
         )
 
-    cdef void _parse_string_table_update(
+    cpdef void parse_string_table_update(
             self, Bitbuffer buf, object table, unsigned int num_entries,
             unsigned int max_entries, unsigned int user_data_bits,
             bint user_data_fixed_size):
+        """Update a string table.
+
+        A single update message can update multiple table entries.
+        Both the entry name and the user data can be updated.
+        """
         cdef unsigned int entry_bits = <unsigned int>math.log2(max_entries)
         cdef unsigned int i = 0
         history = deque(maxlen=32)
@@ -319,23 +375,24 @@ cdef class DemoFile:
                 table['entries'][index]['user_data'] = user_data
 
             history.append(entry)
-            self._fire_event(
+            self.fire_event(
                 'string_table_update', [table, index, entry, user_data]
             )
 
-    cdef void _handle_string_tables(self, object cmd_header):
+    cpdef void handle_string_tables(self, object cmd_header):
         cdef Bitbuffer buf = self.byte_buf.read_bitstream()
         cdef unsigned char num_tables = buf.read_uint_bits(8)
         cdef unsigned char i = 0
 
         for i in range(num_tables):
             table_name = buf.read_string()
-            self._handle_string_table(table_name, buf)
+            self.handle_string_table(table_name, buf)
 
-    cdef void _handle_string_table(self, str table_name, Bitbuffer buf):
+    cpdef void handle_string_table(self, str table_name, Bitbuffer buf):
+        """Populate a string table."""
         cdef unsigned short entries = buf.read_uint_bits(16)
         cdef unsigned short entry_idx = 0
-        table = self._table_by_name(table_name)
+        table = self.table_by_name(table_name)
 
         for entry_idx in range(entries):
             entry_name = buf.read_string()
@@ -353,7 +410,7 @@ cdef class DemoFile:
                 'user_data': user_data
             }
 
-            self._fire_event(
+            self.fire_event(
                 'string_table_update',
                 [table, entry_idx, entry_name, user_data]
             )
@@ -371,7 +428,13 @@ cdef class DemoFile:
                     user_data_len = buf.read_uint_bits(16)
                     user_data = buf.read_user_data(user_data_len * 8)
 
-    cdef void _handle_game_event_list(self, object msg):
+    cpdef void handle_game_event_list(self, object msg):
+        """Create game event list.
+
+        This message contains a list of game events present in
+        this replay. Later, when a game event occurs its ID can
+        be used to get a game event object.
+        """
         for event in msg.descriptors:
             self.game_events.update({
                 event.eventid: {
@@ -380,11 +443,24 @@ cdef class DemoFile:
                 }
             })
 
-    cdef void _handle_game_event(self, object msg):
-        event = self.game_events[msg.eventid]
-        self._fire_event(event['name'], [event, msg])
+    cpdef void handle_game_event(self, object msg):
+        """Handle game event.
 
-    cdef object _class_by_net_message_type(self, unsigned int msg_type):
+        A game event message just contains an event ID.
+        The corresponding event can be found in self.game_events.
+        An event is then triggered for the game event itself.
+        """
+        event = self.game_events[msg.eventid]
+        self.fire_event(event['name'], [event, msg])
+
+    cdef object class_by_net_message_type(self, unsigned int msg_type):
+        """Find a Protobuf class for the given message type.
+
+        The name for the message type is found and then converted
+        to the Protobuf class naming convention.
+
+        :returns: Protobuf class
+        """
         cls = self.merged_enums[msg_type]
 
         if not cls:
@@ -398,19 +474,36 @@ cdef class DemoFile:
 
         return getattr(netmessages_pb2, class_name)
 
-    cdef object _class_by_message_name(self, str name):
+    cpdef object class_by_message_name(self, str name):
+        """Find a Protobuf class for the given message.
+
+        The generated Protobuf modules create classes like
+        C<type>Msg_<name>. For a given message name this
+        method will convert the name to a Protobuf class name
+        and return it.
+
+        :returns: Protobuf class
+        """
         enum_type = name[:3]
         enum_name = name[4:]
         class_name = 'C{}Msg_{}'.format(enum_type.upper(), enum_name)
         return getattr(netmessages_pb2, class_name)
 
-    cpdef object _table_by_name(self, str name):
+    cpdef object table_by_name(self, str name):
         return [t for t in self.string_tables if t['name'] == name][0]
 
-    cdef object _data_table_by_name(self, str name):
+    cpdef object data_table_by_name(self, str name):
         return [t for t in self.data_tables if t.net_table_name == name][0]
 
-    cdef void _table_updated(self, table, index, entry, user_data):
+    cpdef void table_updated(self, table, index, entry, user_data):
+        """Update an instance baseline.
+
+        Each time a string table is updated this method is
+        called. If a baseline doesn't exist yet it is added to
+        the list of pending baselines which are handled later
+        when the correct server class is created. Server classes
+        are created by DATATABLES commands.
+        """
         if table['name'] != 'instancebaseline' or not user_data:
             return
 
@@ -423,11 +516,11 @@ cdef class DemoFile:
             self.pending_baselines[class_id] = baseline_buf
             return
 
-        self.instance_baselines[class_id] = self._parse_instance_baseline(
+        self.instance_baselines[class_id] = self.parse_instance_baseline(
             baseline_buf, class_id
         )
 
-    cdef object _parse_instance_baseline(self, Bitbuffer buf,
+    cpdef object parse_instance_baseline(self, Bitbuffer buf,
                                          unsigned int class_id):
         class_baseline = OrderedDict()
         server_class = self.server_classes[class_id]
@@ -442,12 +535,20 @@ cdef class DemoFile:
 
         return class_baseline
 
-    cdef object _flatten_data_table(self, table):
-        flattened_props = self._collect_props(
-            table, self._collect_exclusions(table)
+    cpdef object flatten_data_table(self, table):
+        """Flatten a data table.
+
+        Data tables can contain other data tables as entries.
+        This method collects all properties and sorts them
+        by priority.
+
+        :returns: Flattened data table
+        """
+        flattened_props = self.collect_props(
+            table, self.collect_exclusions(table)
         )
 
-        priorities = set(p['prop'].priority for p in flattened_props)
+        priorities = set([p['prop'].priority for p in flattened_props])
         priorities.add(64)
         priorities = sorted(list(priorities))
 
@@ -481,7 +582,7 @@ cdef class DemoFile:
                prop.var_name == exclusion.var_name):
                 return True
 
-    cdef list _collect_exclusions(self, object table):
+    cpdef list collect_exclusions(self, object table):
         exclusions = []
         cdef unsigned int idx
 
@@ -490,11 +591,20 @@ cdef class DemoFile:
                 exclusions.append(prop)
 
             if prop.type == PropTypes.DPT_DataTable:
-                sub_table = self._data_table_by_name(prop.dt_name)
-                exclusions.extend(self._collect_exclusions(sub_table))
+                sub_table = self.data_table_by_name(prop.dt_name)
+                exclusions.extend(self.collect_exclusions(sub_table))
         return exclusions
 
-    cdef list _collect_props(self, object table, list exclusions):
+    cpdef list collect_props(self, object table, list exclusions):
+        """Collect table properties which are not excluded.
+
+        If a property is part of an array or is flagged as
+        excluded it will not be returned. Otherwise all
+        properties are collected and data table entries are
+        recursively collected.
+
+        :returns: Flat list of all table properties
+        """
         flattened = []
         cdef unsigned int idx
 
@@ -506,8 +616,8 @@ cdef class DemoFile:
                 continue
 
             if prop.type == PropTypes.DPT_DataTable:
-                sub_table = self._data_table_by_name(prop.dt_name)
-                child_props = self._collect_props(sub_table, exclusions)
+                sub_table = self.data_table_by_name(prop.dt_name)
+                child_props = self.collect_props(sub_table, exclusions)
 
                 if prop.flags & PropFlags.SPROP_COLLAPSIBLE == 0:
                     for cp in child_props:

@@ -69,7 +69,7 @@ class EntityList(MutableSequence):
         return self._get_by_class(Team)
 
     def get_by_user_id(self, user_id):
-        users = self.parser._table_by_name('userinfo')['entries']
+        users = self.parser.table_by_name('userinfo')['entries']
 
         for idx, user in enumerate(users):
             if getattr(user['user_data'], 'user_id', None) == user_id:
