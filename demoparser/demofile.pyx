@@ -313,11 +313,14 @@ cdef class DemoFile:
                     size = buf.read_uint_bits(consts.MAX_USERDATA_BITS)
                     user_data = buf.read_user_data(size * 8)
 
+                if table['name'] == 'userinfo':
+                    user_data = UserInfo.from_data(user_data)
+
                 table['entries'][index]['user_data'] = user_data
 
             history.append(entry)
             self._fire_event(
-                'string_table_update', [table, index, table['entries'][index]]
+                'string_table_update', [table, index, entry, user_data]
             )
 
     cdef void _handle_string_tables(self, object cmd_header):
@@ -352,8 +355,7 @@ cdef class DemoFile:
 
             self._fire_event(
                 'string_table_update',
-                [table, entry_idx,
-                 table['entries'][entry_idx]]
+                [table, entry_idx, entry_name, user_data]
             )
 
         # Client-side entries, maybe they don't exist? I've never seen them
@@ -408,18 +410,17 @@ cdef class DemoFile:
     cdef object _data_table_by_name(self, str name):
         return [t for t in self.data_tables if t.net_table_name == name][0]
 
-    cdef void _table_updated(self, table, index, entry):
-        if table['name'] != 'instancebaseline' or not entry['user_data']:
+    cdef void _table_updated(self, table, index, entry, user_data):
+        if table['name'] != 'instancebaseline' or not user_data:
             return
 
-        cdef unsigned int class_id = int(entry['entry'])
-        cdef Bitbuffer baseline_buf = Bitbuffer(entry['user_data'])
+        cdef unsigned int class_id = int(entry)
+        cdef Bitbuffer baseline_buf = Bitbuffer(user_data)
 
         try:
             self.server_classes[class_id]
         except IndexError:
             self.pending_baselines[class_id] = baseline_buf
-
             return
 
         self.instance_baselines[class_id] = self._parse_instance_baseline(
