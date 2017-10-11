@@ -1,7 +1,4 @@
-import pyximport
-pyximport.install()
-
-from demoparser.bitbuffer import Bitbuffer  # flake8: noqa
+from demoparser.bitbuffer import Bitbuffer
 
 
 def test_read_bit():
