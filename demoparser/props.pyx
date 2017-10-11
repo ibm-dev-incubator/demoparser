@@ -1,4 +1,3 @@
-# cython: profile=True
 from cython.operator cimport dereference
 from demoparser.bitbuffer cimport Bitbuffer
 from demoparser import consts

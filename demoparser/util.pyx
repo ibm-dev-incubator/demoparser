@@ -1,4 +1,3 @@
-# cython: profile=True
 from demoparser.bitbuffer cimport Bitbuffer
 from demoparser.props cimport Decoder
 from demoparser.props cimport PropFlags

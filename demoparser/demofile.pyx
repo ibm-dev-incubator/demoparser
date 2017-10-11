@@ -1,4 +1,3 @@
-# cython: profile=True
 from demoparser.bitbuffer cimport Bitbuffer
 from demoparser.bytebuffer import Bytebuffer
 from libc cimport math
@@ -105,7 +104,7 @@ cdef class DemoFile:
         """Register a callback function for an event."""
         self.callbacks[event].append(func)
 
-    cpdef void parse(self):
+    cpdef void parse(self) except *:
         """Parse the demofile."""
         while True:
             header = self.byte_buf.read_command_header()

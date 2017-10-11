@@ -1,4 +1,3 @@
-# cython: profile=True
 from cython.operator cimport dereference
 from cpython cimport array
 import array
