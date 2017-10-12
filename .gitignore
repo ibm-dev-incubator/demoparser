@@ -12,3 +12,7 @@ ChangeLog
 *.h
 *.so
 doc/_build
+.cache
+.coverage
+build
+dist
