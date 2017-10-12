@@ -10,6 +10,7 @@ Welcome to demoparser's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+   events
    api/modules
 
 
