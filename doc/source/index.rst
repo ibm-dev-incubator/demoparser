@@ -6,17 +6,10 @@
 Welcome to demoparser's documentation!
 ======================================
 
+.. include:: intro.rst
+
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
 
    events
-   api/modules
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
+   API Documentation <api/modules>

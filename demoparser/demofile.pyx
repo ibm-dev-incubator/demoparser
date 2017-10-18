@@ -84,7 +84,7 @@ cdef class DemoFile:
             'string_table_update': [self.table_updated]
         })
 
-    cpdef void fire_event(self, str event, args=None):
+    cpdef void emit(self, str event, args=None):
         """Run callback functions for an event.
 
         Each time an event is trigged each registered callback
@@ -105,13 +105,18 @@ cdef class DemoFile:
         self.callbacks[event].append(func)
 
     cpdef void parse(self) except *:
-        """Parse the demofile."""
+        """Parse the demofile.
+
+        :emits: :ref:`tick_start <event_tick_start>`, \
+                :ref:`tick_end <event_tick_end>`, \
+                :ref:`end <event_end>`
+        """
         while True:
             header = self.byte_buf.read_command_header()
             if header.tick != self.current_tick:
-                self.fire_event('tick_end', [self.current_tick])
+                self.emit('tick_end', [self.current_tick])
                 self.current_tick = header.tick
-                self.fire_event('tick_start', [self.current_tick])
+                self.emit('tick_start', [self.current_tick])
 
             if header.command in (DemoCommand.SIGNON, DemoCommand.PACKET):
                 self.handle_demo_packet(header)
@@ -128,8 +133,8 @@ cdef class DemoFile:
             elif header.command == DemoCommand.STRINGTABLES:
                 self.handle_string_tables(header)
             elif header.command == DemoCommand.STOP:
-                self.fire_event('tick_end', [self.current_tick])
-                self.fire_event('end')
+                self.emit('tick_end', [self.current_tick])
+                self.emit('end')
                 break
             else:
                 raise Exception("Unrecognized command")
@@ -139,6 +144,8 @@ cdef class DemoFile:
 
         A user message is stuff like text chat,
         voice chat, radio messages, etc.
+
+        :emits: :ref:`user_message <event_user_msg>`
         """
         um_class = self.user_messages[msg.msg_type]
         class_name = 'CCSUsrMsg_{}'.format(um_class[6:])
@@ -146,7 +153,7 @@ cdef class DemoFile:
         user_message = getattr(um, class_name)()
         user_message.ParseFromString(msg.msg_data)
 
-        self.fire_event(um_class[6:], [user_message])
+        self.emit(um_class[6:], [user_message])
 
     cpdef void handle_packet_entities(self, object msg):
         """Create or update an entity.
@@ -189,6 +196,8 @@ cdef class DemoFile:
 
         A list of updates is computed and for each one of those
         the appropritate property of the entity instance is updated.
+
+        :emits: :ref:`change <event_change>`
         """
         cdef object server_class = self.server_classes[entity.class_id]
         cdef list updates = parse_entity_update(buf, server_class)
@@ -197,7 +206,7 @@ cdef class DemoFile:
             table_name = update['prop']['table'].net_table_name
             var_name = update['prop']['prop'].var_name
 
-            self.fire_event(
+            self.emit(
                 'change', [entity, table_name, var_name, update['value']]
             )
             entity.update_prop(table_name, var_name, update['value'])
@@ -208,6 +217,8 @@ cdef class DemoFile:
         Demo packets are of type SVC\_ or NET\_. This method
         instantiates the appropriate protobuf class and triggers
         an event.
+
+        :emits: :ref:`demo_packet <event_demo_packet>`.
         """
         self.byte_buf.read_command_data()
         self.byte_buf.read_sequence_data()
@@ -216,7 +227,7 @@ cdef class DemoFile:
             cls = self.class_by_net_message_type(cmd)()
 
             cls.ParseFromString(data)
-            self.fire_event(self.merged_enums[cmd], [cls])
+            self.emit(self.merged_enums[cmd], [cls])
 
     cpdef void handle_data_table(self, cmd_header):
         """Create data tables.
@@ -225,6 +236,9 @@ cdef class DemoFile:
         how to encode each of its properties. These tables are
         called Send Tables and and genrally have names like
         DT_EntityClassName (DT_CSPlayer, DT_Weapon, etc.)
+
+        :emits: :ref:`baseline_create <event_baseline_create>`, \
+                :ref:`datatable_ready <event_datatable_ready>`.
         """
         cdef unsigned int i = 0
         # Size of entire data table chunk
@@ -273,15 +287,15 @@ cdef class DemoFile:
                     self.parse_instance_baseline(
                         pending_baseline, class_id
                 )
-                self.fire_event(
-                    'baseline_update',
+                self.emit(
+                    'baseline_created',
                     [class_id,
                      table,
                      self.instance_baselines[class_id]]
                 )
                 del self.pending_baselines[class_id]
 
-        self.fire_event('datatable_ready', [table])
+        self.emit('datatable_ready', [table])
 
     cpdef void update_string_table(self, object msg):
         buf = Bitbuffer(msg.string_data)
@@ -326,6 +340,8 @@ cdef class DemoFile:
 
         A single update message can update multiple table entries.
         Both the entry name and the user data can be updated.
+
+        :emits: :ref:`string_table_update <event_string_table_update>`.
         """
         cdef unsigned int entry_bits = <unsigned int>math.log2(max_entries)
         cdef unsigned int i = 0
@@ -374,7 +390,7 @@ cdef class DemoFile:
                 table['entries'][index]['user_data'] = user_data
 
             history.append(entry)
-            self.fire_event(
+            self.emit(
                 'string_table_update', [table, index, entry, user_data]
             )
 
@@ -388,7 +404,10 @@ cdef class DemoFile:
             self.handle_string_table(table_name, buf)
 
     cpdef void handle_string_table(self, str table_name, Bitbuffer buf):
-        """Populate a string table."""
+        """Populate a string table.
+
+        :emits: :ref:`string_table_update <event_string_table_update>`.
+        """
         cdef unsigned short entries = buf.read_uint_bits(16)
         cdef unsigned short entry_idx = 0
         table = self.table_by_name(table_name)
@@ -409,7 +428,7 @@ cdef class DemoFile:
                 'user_data': user_data
             }
 
-            self.fire_event(
+            self.emit(
                 'string_table_update',
                 [table, entry_idx, entry_name, user_data]
             )
@@ -448,9 +467,11 @@ cdef class DemoFile:
         A game event message just contains an event ID.
         The corresponding event can be found in self.game_events.
         An event is then triggered for the game event itself.
+
+        :emits: :ref:`game_event <event_game_event>`.
         """
         event = self.game_events[msg.eventid]
-        self.fire_event(event['name'], [event, msg])
+        self.emit(event['name'], [event, msg])
 
     cdef object class_by_net_message_type(self, unsigned int msg_type):
         """Find a Protobuf class for the given message type.
