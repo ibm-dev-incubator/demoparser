@@ -1,0 +1,288 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demoparser.bytebuffer &#8212; demoparser 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for demoparser.bytebuffer</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">demoparser.bitbuffer</span> <span class="k">import</span> <span class="n">Bitbuffer</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="kn">from</span> <span class="nn">demoparser.structures</span> <span class="k">import</span> <span class="n">CommandHeader</span>
+
+
+<div class="viewcode-block" id="Bytebuffer"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer">[docs]</a><span class="k">class</span> <span class="nc">Bytebuffer</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parse a stream of bytes from a .DEM file.</span>
+
+<span class="sd">    This class provdes convenience methods for parsing</span>
+<span class="sd">    .DEM files. It handles unpacking bytes to different</span>
+<span class="sd">    data types, reading variable-length integers, reading</span>
+<span class="sd">    strings, and creating Bitbuffers.</span>
+
+<span class="sd">    :param data: Buffer data</span>
+<span class="sd">    :type data: bytes</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; b = Bytebuffer(b&#39;\x00\xf1\xaa&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; b.read(1)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; b.read_short()</span>
+<span class="sd">    43761</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Bytebuffer.read"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_bytes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read `num_bytes` bytes from buffer.&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="n">num_bytes</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="n">num_bytes</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_command_header"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_command_header">[docs]</a>    <span class="k">def</span> <span class="nf">read_command_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the 6 byte command header.</span>
+
+<span class="sd">        See :ref:`CommandHeader description &lt;header-format&gt;`</span>
+<span class="sd">        for more details.</span>
+
+<span class="sd">        :returns: CommandHeader instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CommandHeader</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_command_data"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_command_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_command_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read command info structure.</span>
+
+<span class="sd">        This is not used by the parser.</span>
+
+<span class="sd">        :returns: bytes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This data fits the structure described in</span>
+        <span class="c1"># structures.py:CommandInfo. This data seems to always</span>
+        <span class="c1"># be all 0s though. It doesn&#39;t appear to be very useful</span>
+        <span class="c1"># and it is very expensive to create one of these structures</span>
+        <span class="c1"># for each message.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">152</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_sequence_data"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_sequence_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_sequence_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read two integers.</span>
+
+<span class="sd">        This data is not used by the parser.</span>
+
+<span class="sd">        :returns: Tuple of integers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&lt;ii&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_user_command"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_user_command">[docs]</a>    <span class="k">def</span> <span class="nf">read_user_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read a user command.&quot;&quot;&quot;</span>
+        <span class="n">seq</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&lt;i&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">length</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_raw_data</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">seq</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_packet_data"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_packet_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_packet_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read a demo packet.</span>
+
+<span class="sd">        Each packet consists of a command and data.</span>
+<span class="sd">        The command is an ID that references either a NET\_ or</span>
+<span class="sd">        SVC\_ class defined in netmessages.proto.</span>
+
+<span class="sd">        The data is used to instantiate the class referred to</span>
+<span class="sd">        by command.</span>
+
+<span class="sd">        :returns: Tuple (command, data)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&lt;i&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_varint</span><span class="p">()</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_varint</span><span class="p">()</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="n">size</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_varint_size</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varint_size</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+            <span class="k">yield</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_raw_data"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_raw_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_raw_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read number of bytes specified by a signed int.</span>
+
+<span class="sd">        First a 32-bit signed integer is read, then</span>
+<span class="sd">        that number of bytes is read from the stream.</span>
+
+<span class="sd">        :returns: Tuple (bytes_read, bytes)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&lt;i&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">length</span><span class="p">,</span> <span class="n">buf</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_bitstream"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_bitstream">[docs]</a>    <span class="k">def</span> <span class="nf">read_bitstream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a Bitbuffer from a number of bytes.</span>
+
+<span class="sd">        The numbers of bytes to include in the Bitbuffer is</span>
+<span class="sd">        read. Then that number of bytes is used to instantiate</span>
+<span class="sd">        a Bitbuffer instance.</span>
+
+<span class="sd">        :returns: Bitbuffer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_raw_data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Bitbuffer</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_var_bytes"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_var_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">read_var_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read number of bytes specified by a varint.</span>
+
+<span class="sd">        First a varint is read and then the number</span>
+<span class="sd">        of bytes specified by the varint are read.</span>
+
+<span class="sd">        :returns: bytestring</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_varint</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">length</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_string"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_string">[docs]</a>    <span class="k">def</span> <span class="nf">read_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read a zero-terminated string.</span>
+
+<span class="sd">        Reads characters until \\0 is encountered.</span>
+
+<span class="sd">        :returns: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">char</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">char</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_varint"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_varint">[docs]</a>    <span class="k">def</span> <span class="nf">read_varint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read a variable-length integer.</span>
+
+<span class="sd">        :returns: Integer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">cont</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">while</span> <span class="n">cont</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">|=</span> <span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="mh">0x7F</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">7</span> <span class="o">*</span> <span class="n">count</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">cont</span> <span class="o">=</span> <span class="n">b</span> <span class="o">&amp;</span> <span class="mh">0x80</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Bytebuffer.read_short"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.bytebuffer.Bytebuffer.read_short">[docs]</a>    <span class="k">def</span> <span class="nf">read_short</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read a 16-bit unsigned short.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_varint_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">21</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">28</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">5</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">demoparser</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">API Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ryan Moe.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,258 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demoparser.structures &#8212; demoparser 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for demoparser.structures</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">suitcase.structure</span> <span class="k">import</span> <span class="n">Structure</span>
+<span class="kn">from</span> <span class="nn">suitcase.fields</span> <span class="k">import</span> <span class="n">FieldArray</span>
+<span class="kn">from</span> <span class="nn">suitcase.fields</span> <span class="k">import</span> <span class="n">Magic</span>
+<span class="kn">from</span> <span class="nn">suitcase.fields</span> <span class="k">import</span> <span class="n">SubstructureField</span>
+<span class="kn">from</span> <span class="nn">suitcase.fields</span> <span class="k">import</span> <span class="n">ULInt32</span>
+<span class="kn">from</span> <span class="nn">suitcase.fields</span> <span class="k">import</span> <span class="n">UBInt32</span>
+<span class="kn">from</span> <span class="nn">suitcase.fields</span> <span class="k">import</span> <span class="n">UBInt64</span>
+<span class="kn">from</span> <span class="nn">suitcase.fields</span> <span class="k">import</span> <span class="n">UBInt8</span>
+<span class="kn">from</span> <span class="nn">suitcase.fields</span> <span class="k">import</span> <span class="n">ULInt8</span>
+
+<span class="kn">from</span> <span class="nn">demoparser</span> <span class="k">import</span> <span class="n">consts</span>
+<span class="kn">from</span> <span class="nn">demoparser.fields</span> <span class="k">import</span> <span class="n">FixedLengthString</span>
+<span class="kn">from</span> <span class="nn">demoparser.fields</span> <span class="k">import</span> <span class="n">SLFloat32</span>
+<span class="kn">from</span> <span class="nn">demoparser.fields</span> <span class="k">import</span> <span class="n">UBInt32Sequence</span>
+
+
+<div class="viewcode-block" id="DemoHeader"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.structures.DemoHeader">[docs]</a><span class="k">class</span> <span class="nc">DemoHeader</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;1072 Byte header for .DEM file.</span>
+
+<span class="sd">    This header has the following format:</span>
+
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | Byte      | Description                           |</span>
+<span class="sd">    +===========+=======================================+</span>
+<span class="sd">    | 0-7       | Fixed string &#39;HL2DEMO\0&#39;.             |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 8-11      | Demo file protocol version.           |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 12-15     | Network protocol version.             |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 16-275    | Server name.                          |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 276-535   | Name of client who recorded the demo. |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 536-795   | Map name.                             |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 796-1055  | Game directory.                       |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 1056-1059 | Playback time in seconds.             |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 1060-1063 | Number of ticks in demo.              |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 1064-1067 | Number of frames in demo.             |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    | 1068-1071 | Length of signon data.                |</span>
+<span class="sd">    +-----------+---------------------------------------+</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">Magic</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;HL2DEMO</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">demo_protocol</span> <span class="o">=</span> <span class="n">ULInt32</span><span class="p">()</span>
+    <span class="n">network_protocol</span> <span class="o">=</span> <span class="n">ULInt32</span><span class="p">()</span>
+    <span class="n">server_name</span> <span class="o">=</span> <span class="n">FixedLengthString</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">MAX_PATH</span><span class="p">)</span>
+    <span class="n">client_name</span> <span class="o">=</span> <span class="n">FixedLengthString</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">MAX_PATH</span><span class="p">)</span>
+    <span class="n">map_name</span> <span class="o">=</span> <span class="n">FixedLengthString</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">MAX_PATH</span><span class="p">)</span>
+    <span class="n">game_directory</span> <span class="o">=</span> <span class="n">FixedLengthString</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">MAX_PATH</span><span class="p">)</span>
+    <span class="n">playback_time</span> <span class="o">=</span> <span class="n">SLFloat32</span><span class="p">()</span>
+    <span class="n">ticks</span> <span class="o">=</span> <span class="n">ULInt32</span><span class="p">()</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="n">ULInt32</span><span class="p">()</span>
+    <span class="n">signon_length</span> <span class="o">=</span> <span class="n">ULInt32</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CommandHeader"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.structures.CommandHeader">[docs]</a><span class="k">class</span> <span class="nc">CommandHeader</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Header for each command packet.</span>
+
+<span class="sd">    .. _header-format:</span>
+
+<span class="sd">    The header has the following format:</span>
+
+<span class="sd">    +------+--------------+</span>
+<span class="sd">    | Byte | Description  |</span>
+<span class="sd">    +======+==============+</span>
+<span class="sd">    | 0    | Command ID   |</span>
+<span class="sd">    +------+--------------+</span>
+<span class="sd">    | 1-4  | Current tick |</span>
+<span class="sd">    +------+--------------+</span>
+<span class="sd">    | 5    | Player ID    |</span>
+<span class="sd">    +------+--------------+</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="n">ULInt8</span><span class="p">()</span>
+    <span class="n">tick</span> <span class="o">=</span> <span class="n">ULInt32</span><span class="p">()</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">ULInt8</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QAngle"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.structures.QAngle">[docs]</a><span class="k">class</span> <span class="nc">QAngle</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="n">pitch</span> <span class="o">=</span> <span class="n">SLFloat32</span><span class="p">()</span>
+    <span class="n">yaw</span> <span class="o">=</span> <span class="n">SLFloat32</span><span class="p">()</span>
+    <span class="n">roll</span> <span class="o">=</span> <span class="n">SLFloat32</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Vector"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.structures.Vector">[docs]</a><span class="k">class</span> <span class="nc">Vector</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">SLFloat32</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">SLFloat32</span><span class="p">()</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">SLFloat32</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="OriginViewAngles"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.structures.OriginViewAngles">[docs]</a><span class="k">class</span> <span class="nc">OriginViewAngles</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="n">view_origin</span> <span class="o">=</span> <span class="n">SubstructureField</span><span class="p">(</span><span class="n">Vector</span><span class="p">)</span>
+    <span class="n">view_angles</span> <span class="o">=</span> <span class="n">SubstructureField</span><span class="p">(</span><span class="n">QAngle</span><span class="p">)</span>
+    <span class="n">local_view_angles</span> <span class="o">=</span> <span class="n">SubstructureField</span><span class="p">(</span><span class="n">QAngle</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SplitCommandInfo"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.structures.SplitCommandInfo">[docs]</a><span class="k">class</span> <span class="nc">SplitCommandInfo</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="n">ULInt32</span><span class="p">()</span>
+    <span class="n">original</span> <span class="o">=</span> <span class="n">SubstructureField</span><span class="p">(</span><span class="n">OriginViewAngles</span><span class="p">)</span>
+    <span class="n">resampled</span> <span class="o">=</span> <span class="n">SubstructureField</span><span class="p">(</span><span class="n">OriginViewAngles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CommandInfo"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.structures.CommandInfo">[docs]</a><span class="k">class</span> <span class="nc">CommandInfo</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="n">FieldArray</span><span class="p">(</span><span class="n">SplitCommandInfo</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserInfo"><a class="viewcode-back" href="../../api/demoparser.html#demoparser.structures.UserInfo">[docs]</a><span class="k">class</span> <span class="nc">UserInfo</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Player data.</span>
+
+<span class="sd">    This structure has the following format:</span>
+
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | Byte    | Description                           |</span>
+<span class="sd">    +=========+=======================================+</span>
+<span class="sd">    | 0-7     | Version. Same for all players.        |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 8-15    | xuid. Some sort of unique ID.         |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 15-142  | Player name.                          |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 143-146 | Local server user ID.                 |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 147-179 | GUID                                  |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 180-183 | Friend&#39;s ID.                          |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 184-312 | Friend&#39;s Name.                        |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 313     | Is player a bot?                      |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 314     | Is player an HLTV proxy?              |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 314-329 | Custom files CRC.                     |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 330     | Numbre of files downloaded by server. |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 331-335 | Entity index.                         |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    | 336-340 | No idea.                              |</span>
+<span class="sd">    +---------+---------------------------------------+</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">UBInt64</span><span class="p">()</span>
+    <span class="n">xuid</span> <span class="o">=</span> <span class="n">UBInt64</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">FixedLengthString</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">MAX_PLAYER_NAME_LENGTH</span><span class="p">)</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">UBInt32</span><span class="p">()</span>
+    <span class="n">guid</span> <span class="o">=</span> <span class="n">FixedLengthString</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">SIGNED_GUID_LEN</span><span class="p">)</span>
+    <span class="n">friends_id</span> <span class="o">=</span> <span class="n">UBInt32</span><span class="p">()</span>
+    <span class="n">friends_name</span> <span class="o">=</span> <span class="n">FixedLengthString</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">MAX_PLAYER_NAME_LENGTH</span><span class="p">)</span>
+    <span class="n">fake_player</span> <span class="o">=</span> <span class="n">UBInt8</span><span class="p">()</span>
+    <span class="n">is_hltv</span> <span class="o">=</span> <span class="n">UBInt8</span><span class="p">()</span>
+    <span class="n">custom_files</span> <span class="o">=</span> <span class="n">UBInt32Sequence</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">MAX_CUSTOM_FILES</span><span class="p">)</span>
+    <span class="n">files_downloaded</span> <span class="o">=</span> <span class="n">UBInt8</span><span class="p">()</span>
+    <span class="n">entity_id</span> <span class="o">=</span> <span class="n">UBInt32</span><span class="p">()</span>
+    <span class="n">tbd</span> <span class="o">=</span> <span class="n">UBInt32</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">demoparser</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">API Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ryan Moe.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

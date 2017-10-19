@@ -1,0 +1,1300 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demoparser package &#8212; demoparser 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="demoparser.entities package" href="demoparser.entities.html" />
+    <link rel="prev" title="demoparser" href="modules.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="demoparser-package">
+<h1>demoparser package<a class="headerlink" href="#demoparser-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demoparser.entities.html">demoparser.entities package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demoparser.entities.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demoparser.entities.html#module-demoparser.entities.base">demoparser.entities.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demoparser.entities.html#module-demoparser.entities.entity_list">demoparser.entities.entity_list module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demoparser.entities.html#module-demoparser.entities.game_rules">demoparser.entities.game_rules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demoparser.entities.html#module-demoparser.entities.player">demoparser.entities.player module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demoparser.entities.html#module-demoparser.entities.team">demoparser.entities.team module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demoparser.entities.html#module-demoparser.entities.weapon">demoparser.entities.weapon module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demoparser.entities.html#module-demoparser.entities">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-demoparser.bitbuffer">
+<span id="demoparser-bitbuffer-module"></span><h2>demoparser.bitbuffer module<a class="headerlink" href="#module-demoparser.bitbuffer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.bitbuffer.Bitbuffer">
+<em class="property">class </em><code class="descclassname">demoparser.bitbuffer.</code><code class="descname">Bitbuffer</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parse a stream of bits from a series of bytes.</p>
+<p>Data is cast to unsigned int* and read one unsigned int
+at a time. As an unsigned int is 32 bits this has the
+effect of reading 4 bytes at once. Reads can span integer
+boundaries and the consecutive integers will be merged
+correctly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) – Data to parse bit-by-bit</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">buf</span> <span class="o">=</span> <span class="n">Bitbuffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x11\x22</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">buf</span><span class="o">.</span><span class="n">read_uint_bits</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="go">17</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">buf</span><span class="o">.</span><span class="n">read_uint_bits</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="go">34</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.next_dword">
+<code class="descname">next_dword</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; unsigned int<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.next_dword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move to the next 32-bit integer in the stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">unsigned int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_bit">
+<code class="descname">read_bit</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; unsigned char<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_bit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a single bit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">one bit</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_bit_cell_coord">
+<code class="descname">read_bit_cell_coord</code><span class="sig-paren">(</span><em>self</em>, <em>unsigned int bits</em>, <em>unsigned int coord_type</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_bit_cell_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a cell coordinate.</p>
+<p>A cell coordinate is a float which has been
+compressed. The number of bits indicates maximum
+value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bits</strong> (<em>unsigned int</em>) – number of bits to read</li>
+<li><strong>coord_type</strong> (<em>unsigned int</em>) – level of precision</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_bit_coord">
+<code class="descname">read_bit_coord</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_bit_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a float and treat as a world coordinate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_bit_normal">
+<code class="descname">read_bit_normal</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_bit_normal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_sint_bits">
+<code class="descname">read_sint_bits</code><span class="sig-paren">(</span><em>self</em>, <em>unsigned int bits</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_sint_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a signed integer of <cite>bits</cite> bits.</p>
+<p>First an unsigned integer is read then a two’s complement
+integer is computed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bits</strong> (<em>unsigned int</em>) – Number of bits to read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_string">
+<code class="descname">read_string</code><span class="sig-paren">(</span><em>self</em>, <em>int length=-1</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a string.</p>
+<p>If length is not provided characters are read until
+\0 is reached. If length is provided then exactly
+length bytes will be read and the string may not be
+zero-terminated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_uint_bits">
+<code class="descname">read_uint_bits</code><span class="sig-paren">(</span><em>self</em>, <em>unsigned int bits</em><span class="sig-paren">)</span> &#x2192; unsigned int<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_uint_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the unsigned integer represented by <cite>bits</cite> bits.</p>
+<p>If the number of bits remaining in the current word is
+not enough then the next word will be read.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bits</strong> (<em>unsigned int</em>) – Number of bits to read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">unsigned int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_user_data">
+<code class="descname">read_user_data</code><span class="sig-paren">(</span><em>self</em>, <em>unsigned int bits</em><span class="sig-paren">)</span> &#x2192; bytes<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_user_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read user data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bits</strong> (<em>unsigned int</em>) – Number of bits to read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bytes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bitbuffer.Bitbuffer.read_var_int">
+<code class="descname">read_var_int</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; unsigned int<a class="headerlink" href="#demoparser.bitbuffer.Bitbuffer.read_var_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a variable length integer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">unsigned int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.bytebuffer">
+<span id="demoparser-bytebuffer-module"></span><h2>demoparser.bytebuffer module<a class="headerlink" href="#module-demoparser.bytebuffer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.bytebuffer.Bytebuffer">
+<em class="property">class </em><code class="descclassname">demoparser.bytebuffer.</code><code class="descname">Bytebuffer</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parse a stream of bytes from a .DEM file.</p>
+<p>This class provdes convenience methods for parsing
+.DEM files. It handles unpacking bytes to different
+data types, reading variable-length integers, reading
+strings, and creating Bitbuffers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) – Buffer data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Bytebuffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00\xf1\xaa</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">read_short</span><span class="p">()</span>
+<span class="go">43761</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read">
+<code class="descname">read</code><span class="sig-paren">(</span><em>num_bytes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read <cite>num_bytes</cite> bytes from buffer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_bitstream">
+<code class="descname">read_bitstream</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_bitstream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_bitstream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Bitbuffer from a number of bytes.</p>
+<p>The numbers of bytes to include in the Bitbuffer is
+read. Then that number of bytes is used to instantiate
+a Bitbuffer instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Bitbuffer instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_command_data">
+<code class="descname">read_command_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_command_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_command_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read command info structure.</p>
+<p>This is not used by the parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">bytes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_command_header">
+<code class="descname">read_command_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_command_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_command_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the 6 byte command header.</p>
+<p>See <a class="reference internal" href="#header-format"><span class="std std-ref">CommandHeader description</span></a>
+for more details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">CommandHeader instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_packet_data">
+<code class="descname">read_packet_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_packet_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_packet_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a demo packet.</p>
+<p>Each packet consists of a command and data.
+The command is an ID that references either a NET_ or
+SVC_ class defined in netmessages.proto.</p>
+<p>The data is used to instantiate the class referred to
+by command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Tuple (command, data)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_raw_data">
+<code class="descname">read_raw_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_raw_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_raw_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read number of bytes specified by a signed int.</p>
+<p>First a 32-bit signed integer is read, then
+that number of bytes is read from the stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Tuple (bytes_read, bytes)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_sequence_data">
+<code class="descname">read_sequence_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_sequence_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_sequence_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read two integers.</p>
+<p>This data is not used by the parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Tuple of integers</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_short">
+<code class="descname">read_short</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_short"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_short" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a 16-bit unsigned short.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_string">
+<code class="descname">read_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a zero-terminated string.</p>
+<p>Reads characters until \0 is encountered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_user_command">
+<code class="descname">read_user_command</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_user_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_user_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a user command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_var_bytes">
+<code class="descname">read_var_bytes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_var_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_var_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read number of bytes specified by a varint.</p>
+<p>First a varint is read and then the number
+of bytes specified by the varint are read.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">bytestring</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.bytebuffer.Bytebuffer.read_varint">
+<code class="descname">read_varint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/bytebuffer.html#Bytebuffer.read_varint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.bytebuffer.Bytebuffer.read_varint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a variable-length integer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.consts">
+<span id="demoparser-consts-module"></span><h2>demoparser.consts module<a class="headerlink" href="#module-demoparser.consts" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-demoparser.demofile">
+<span id="demoparser-demofile-module"></span><h2>demoparser.demofile module<a class="headerlink" href="#module-demoparser.demofile" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="demoparser.demofile.ClassNotFoundError">
+<em class="property">exception </em><code class="descclassname">demoparser.demofile.</code><code class="descname">ClassNotFoundError</code><a class="headerlink" href="#demoparser.demofile.ClassNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="demoparser.demofile.CommandError">
+<em class="property">exception </em><code class="descclassname">demoparser.demofile.</code><code class="descname">CommandError</code><a class="headerlink" href="#demoparser.demofile.CommandError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.demofile.DemoFile">
+<em class="property">class </em><code class="descclassname">demoparser.demofile.</code><code class="descname">DemoFile</code><a class="headerlink" href="#demoparser.demofile.DemoFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.add_callback">
+<code class="descname">add_callback</code><span class="sig-paren">(</span><em>self</em>, <em>event</em>, <em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.demofile.DemoFile.add_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a callback function for an event.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.class_by_message_name">
+<code class="descname">class_by_message_name</code><span class="sig-paren">(</span><em>self</em>, <em>str name</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.demofile.DemoFile.class_by_message_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a Protobuf class for the given message.</p>
+<p>The generated Protobuf modules create classes like
+C&lt;type&gt;Msg_&lt;name&gt;. For a given message name this
+method will convert the name to a Protobuf class name
+and return it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Protobuf class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.collect_exclusions">
+<code class="descname">collect_exclusions</code><span class="sig-paren">(</span><em>self</em>, <em>table</em><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#demoparser.demofile.DemoFile.collect_exclusions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.collect_props">
+<code class="descname">collect_props</code><span class="sig-paren">(</span><em>self</em>, <em>table</em>, <em>list exclusions</em><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#demoparser.demofile.DemoFile.collect_props" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect table properties which are not excluded.</p>
+<p>If a property is part of an array or is flagged as
+excluded it will not be returned. Otherwise all
+properties are collected and data table entries are
+recursively collected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Flat list of all table properties</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.create_string_table">
+<code class="descname">create_string_table</code><span class="sig-paren">(</span><em>self</em>, <em>msg</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.create_string_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a string table.</p>
+<p>A string table consists of a name and a list of entries.
+The maximum number of entries is created and initialized
+to None. This is done because future messages that update
+or reference string table entries do so by index.</p>
+<p>Each entry is a dictionary with two keys, entry and user_data.
+Entry is the name of the entry and user_data contains binary
+data related to the entry. In the ‘user_info’ string table
+user_data describes a UserInfo object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.demofile.DemoFile.current_tick">
+<code class="descname">current_tick</code><a class="headerlink" href="#demoparser.demofile.DemoFile.current_tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>current_tick: ‘unsigned int’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.data_table_by_name">
+<code class="descname">data_table_by_name</code><span class="sig-paren">(</span><em>self</em>, <em>str name</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.demofile.DemoFile.data_table_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.emit">
+<code class="descname">emit</code><span class="sig-paren">(</span><em>self</em>, <em>str event</em>, <em>args=None</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.emit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run callback functions for an event.</p>
+<p>Each time an event is trigged each registered callback
+will be called with the arguments provided to this method.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.demofile.DemoFile.entities">
+<code class="descname">entities</code><a class="headerlink" href="#demoparser.demofile.DemoFile.entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>entities: object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.flatten_data_table">
+<code class="descname">flatten_data_table</code><span class="sig-paren">(</span><em>self</em>, <em>table</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.demofile.DemoFile.flatten_data_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flatten a data table.</p>
+<p>Data tables can contain other data tables as entries.
+This method collects all properties and sorts them
+by priority.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Flattened data table</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.handle_data_table">
+<code class="descname">handle_data_table</code><span class="sig-paren">(</span><em>self</em>, <em>cmd_header</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.handle_data_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create data tables.</p>
+<p>Each entity class maintains a data table that describes
+how to encode each of its properties. These tables are
+called Send Tables and and genrally have names like
+DT_EntityClassName (DT_CSPlayer, DT_Weapon, etc.)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Emits:</th><td class="field-body"><a class="reference internal" href="../events.html#event-baseline-create"><span class="std std-ref">baseline_create</span></a>,                 <a class="reference internal" href="../events.html#event-datatable-ready"><span class="std std-ref">datatable_ready</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.handle_demo_packet">
+<code class="descname">handle_demo_packet</code><span class="sig-paren">(</span><em>self</em>, <em>cmd_header</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.handle_demo_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle demo packet.</p>
+<p>Demo packets are of type SVC_ or NET_. This method
+instantiates the appropriate protobuf class and triggers
+an event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Emits:</th><td class="field-body"><a class="reference internal" href="../events.html#event-demo-packet"><span class="std std-ref">demo_packet</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.handle_game_event">
+<code class="descname">handle_game_event</code><span class="sig-paren">(</span><em>self</em>, <em>msg</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.handle_game_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle game event.</p>
+<p>A game event message just contains an event ID.
+The corresponding event can be found in self.game_events.
+An event is then triggered for the game event itself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Emits:</th><td class="field-body"><a class="reference internal" href="../events.html#event-game-event"><span class="std std-ref">game_event</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.handle_game_event_list">
+<code class="descname">handle_game_event_list</code><span class="sig-paren">(</span><em>self</em>, <em>msg</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.handle_game_event_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create game event list.</p>
+<p>This message contains a list of game events present in
+this replay. Later, when a game event occurs its ID can
+be used to get a game event object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.handle_packet_entities">
+<code class="descname">handle_packet_entities</code><span class="sig-paren">(</span><em>self</em>, <em>msg</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.handle_packet_entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or update an entity.</p>
+<p>Entities represent in-game objects and are networked (i.e.
+their state is maintained on the server and updates are sent
+to one or more clients).</p>
+<p>Entities have a class ID which defines the type of entity
+it is. The class ID is also used to find the correct
+instance baseline. Instance baselines serve as default
+values when entities are created.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.handle_string_table">
+<code class="descname">handle_string_table</code><span class="sig-paren">(</span><em>self</em>, <em>str table_name</em>, <em>Bitbuffer buf</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.handle_string_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate a string table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Emits:</th><td class="field-body"><a class="reference internal" href="../events.html#event-string-table-update"><span class="std std-ref">string_table_update</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.handle_string_tables">
+<code class="descname">handle_string_tables</code><span class="sig-paren">(</span><em>self</em>, <em>cmd_header</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.handle_string_tables" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.handle_user_message">
+<code class="descname">handle_user_message</code><span class="sig-paren">(</span><em>self</em>, <em>msg</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.handle_user_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle user message.</p>
+<p>A user message is stuff like text chat,
+voice chat, radio messages, etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Emits:</th><td class="field-body"><a class="reference internal" href="../events.html#event-user-msg"><span class="std std-ref">user_message</span></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.demofile.DemoFile.instance_baselines">
+<code class="descname">instance_baselines</code><a class="headerlink" href="#demoparser.demofile.DemoFile.instance_baselines" title="Permalink to this definition">¶</a></dt>
+<dd><p>instance_baselines: object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the demofile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Emits:</th><td class="field-body"><a class="reference internal" href="../events.html#event-tick-start"><span class="std std-ref">tick_start</span></a>,                 <a class="reference internal" href="../events.html#event-tick-end"><span class="std std-ref">tick_end</span></a>,                 <a class="reference internal" href="../events.html#event-end"><span class="std std-ref">end</span></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body">CommandError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.parse_instance_baseline">
+<code class="descname">parse_instance_baseline</code><span class="sig-paren">(</span><em>self</em>, <em>Bitbuffer buf</em>, <em>unsigned int class_id</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.demofile.DemoFile.parse_instance_baseline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse baseline.</p>
+<p>Baselines serve as default data for entities of type
+<cite>class_id</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>buf</strong> (<a class="reference internal" href="#demoparser.bitbuffer.Bitbuffer" title="demoparser.bitbuffer.Bitbuffer"><em>Bitbuffer</em></a>) – Data to read</li>
+<li><strong>class_id</strong> (<em>unsigned int</em>) – Server class ID</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">baseline for <cite>class_id</cite>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.parse_string_table_update">
+<code class="descname">parse_string_table_update</code><span class="sig-paren">(</span><em>self</em>, <em>Bitbuffer buf</em>, <em>table</em>, <em>unsigned int num_entries</em>, <em>unsigned int max_entries</em>, <em>unsigned int user_data_bits</em>, <em>bool user_data_fixed_size</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.parse_string_table_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a string table.</p>
+<p>A single update message can update multiple table entries.
+Both the entry name and the user data can be updated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Emits:</th><td class="field-body"><a class="reference internal" href="../events.html#event-string-table-update"><span class="std std-ref">string_table_update</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.read_new_entity">
+<code class="descname">read_new_entity</code><span class="sig-paren">(</span><em>self</em>, <em>Bitbuffer buf</em>, <em>entity</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.read_new_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read entity data.</p>
+<p>A list of updates is computed and for each one of those
+the appropritate property of the entity instance is updated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Emits:</th><td class="field-body"><a class="reference internal" href="../events.html#event-change"><span class="std std-ref">change</span></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.table_by_name">
+<code class="descname">table_by_name</code><span class="sig-paren">(</span><em>self</em>, <em>str name</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.demofile.DemoFile.table_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.table_updated">
+<code class="descname">table_updated</code><span class="sig-paren">(</span><em>self</em>, <em>table</em>, <em>index</em>, <em>entry</em>, <em>user_data</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.table_updated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update an instance baseline.</p>
+<p>Each time a string table is updated this method is
+called. If a baseline doesn’t exist yet it is added to
+the list of pending baselines which are handled later
+when the correct server class is created. Server classes
+are created by DATATABLES commands.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.demofile.DemoFile.update_string_table">
+<code class="descname">update_string_table</code><span class="sig-paren">(</span><em>self</em>, <em>msg</em><span class="sig-paren">)</span> &#x2192; void<a class="headerlink" href="#demoparser.demofile.DemoFile.update_string_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.fields">
+<span id="demoparser-fields-module"></span><h2>demoparser.fields module<a class="headerlink" href="#module-demoparser.fields" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.fields.FixedLengthString">
+<em class="property">class </em><code class="descclassname">demoparser.fields.</code><code class="descname">FixedLengthString</code><span class="sig-paren">(</span><em>length</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/fields.html#FixedLengthString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.fields.FixedLengthString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.fields.BaseField</span></code></p>
+<p>A string of a fixed number of bytes.</p>
+<p>The specified number of bytes are read and then any null
+bytes are stripped from the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>length</strong> (<em>Integer</em>) – Number of bytes to read.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="demoparser.fields.FixedLengthString.bytes_required">
+<code class="descname">bytes_required</code><a class="headerlink" href="#demoparser.fields.FixedLengthString.bytes_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of bytes to read from stream.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.fields.FixedLengthString.pack">
+<code class="descname">pack</code><span class="sig-paren">(</span><em>stream</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/fields.html#FixedLengthString.pack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.fields.FixedLengthString.pack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.fields.FixedLengthString.unpack">
+<code class="descname">unpack</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/fields.html#FixedLengthString.unpack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.fields.FixedLengthString.unpack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.fields.SLFloat32">
+<em class="property">class </em><code class="descclassname">demoparser.fields.</code><code class="descname">SLFloat32</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/fields.html#SLFloat32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.fields.SLFloat32" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.fields.BaseStructField</span></code></p>
+<p>Signed Little Endian 32-bit float field.</p>
+<dl class="attribute">
+<dt id="demoparser.fields.SLFloat32.PACK_FORMAT">
+<code class="descname">PACK_FORMAT</code><em class="property"> = b'&lt;f'</em><a class="headerlink" href="#demoparser.fields.SLFloat32.PACK_FORMAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.fields.SLFloat32.UNPACK_FORMAT">
+<code class="descname">UNPACK_FORMAT</code><em class="property"> = b'&lt;f'</em><a class="headerlink" href="#demoparser.fields.SLFloat32.UNPACK_FORMAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.fields.SLFloat32.unpack">
+<code class="descname">unpack</code><span class="sig-paren">(</span><em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/fields.html#SLFloat32.unpack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.fields.SLFloat32.unpack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.fields.UBInt32Sequence">
+<em class="property">class </em><code class="descclassname">demoparser.fields.</code><code class="descname">UBInt32Sequence</code><span class="sig-paren">(</span><em>length</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/fields.html#UBInt32Sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.fields.UBInt32Sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.fields.BaseFixedByteSequence</span></code></p>
+<p>A sequence of unsigned, big-endian 32 bit integers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>length</strong> (<em>Integer</em>) – Number of 32-bit integers in sequence.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.props">
+<span id="demoparser-props-module"></span><h2>demoparser.props module<a class="headerlink" href="#module-demoparser.props" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.props.Decoder">
+<em class="property">class </em><code class="descclassname">demoparser.props.</code><code class="descname">Decoder</code><a class="headerlink" href="#demoparser.props.Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Decode a property.</p>
+<p>Properties of server classes are encoded differently depending
+on the type of the property.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>buf</strong> (<a class="reference internal" href="#demoparser.bitbuffer.Bitbuffer" title="demoparser.bitbuffer.Bitbuffer"><em>Bitbuffer</em></a>) – Raw buffer data used for decoding</li>
+<li><strong>prop</strong> (<em>object</em>) – Property to decode</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode">
+<code class="descname">decode</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.props.Decoder.decode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode_array">
+<code class="descname">decode_array</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#demoparser.props.Decoder.decode_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode array.</p>
+<p>Arrays contain one or more elements (including arrays) which
+are recursively decoded.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode_float">
+<code class="descname">decode_float</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#demoparser.props.Decoder.decode_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode a floating point value.</p>
+<p>First the value is decoded as a special float. If that
+returns NaN then a normal floating point value is calculated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode_int">
+<code class="descname">decode_int</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; long<a class="headerlink" href="#demoparser.props.Decoder.decode_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode an integer.</p>
+<p>Reads the number of bits specified in the
+num_bits field of the property. If the property
+has the SPROP_UNSIGNED flag set the number will be
+read as an unsigned int.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode_int64">
+<code class="descname">decode_int64</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#demoparser.props.Decoder.decode_int64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode a 64-bit integer.</p>
+<p>CS:GO demos don’t appear to contain 64-bit ints.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode_special_float">
+<code class="descname">decode_special_float</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#demoparser.props.Decoder.decode_special_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode a float</p>
+<p>A special float is a float which is interpreted in
+some special way. The treatement is determined by
+the property’s flags.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag</th>
+<th class="head">Explanation</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>COORD</td>
+<td>Treat the float or vector as a world
+coordinate.</td>
+</tr>
+<tr class="row-odd"><td>COORD_MP</td>
+<td>Like COORD but special handling for
+multi-player games.</td>
+</tr>
+<tr class="row-even"><td>COORD_MP_LOWPRECISION</td>
+<td>Like COORD_MP but the fractional
+component uses 3 bits instead of 5.</td>
+</tr>
+<tr class="row-odd"><td>COORD_MP_INTEGRAL</td>
+<td>Like COORD_MP but coordinates are
+rounded to integral boundaries.</td>
+</tr>
+<tr class="row-even"><td>NOSCALE</td>
+<td>Don’t scale floating-point value to
+a range.</td>
+</tr>
+<tr class="row-odd"><td>NORMAL</td>
+<td>Treat vector as a normal.</td>
+</tr>
+<tr class="row-even"><td>CELL_COORD</td>
+<td>Like COORD but has special encoding
+for cell coordinates which can’t be
+negative.</td>
+</tr>
+<tr class="row-odd"><td>CELL_COORD_LOWPRECISION</td>
+<td>Like CELL_COORD but fractional part
+uses 3 bits instead of 5.</td>
+</tr>
+<tr class="row-even"><td>CELL_COORD_INTEGRAL</td>
+<td>Like CELL_COORD but coordinates are
+rounded to integral boundaries.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode_string">
+<code class="descname">decode_string</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#demoparser.props.Decoder.decode_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode a string.</p>
+<p>A fixed number of bits are read which may be
+more than the string’s length (i.e. some bits
+are read after a 0 is encountered).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode_vector">
+<code class="descname">decode_vector</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#demoparser.props.Decoder.decode_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode a vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.props.Decoder.decode_vector_xy">
+<code class="descname">decode_vector_xy</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#demoparser.props.Decoder.decode_vector_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode a two-element vector.</p>
+<p>This only reads the X and Y coordinates for
+the vector and sets the Z coordinate to 0.0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.structures">
+<span id="demoparser-structures-module"></span><h2>demoparser.structures module<a class="headerlink" href="#module-demoparser.structures" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.structures.CommandHeader">
+<em class="property">class </em><code class="descclassname">demoparser.structures.</code><code class="descname">CommandHeader</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/structures.html#CommandHeader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.structures.CommandHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.structure.Structure</span></code></p>
+<p>Header for each command packet.</p>
+<p id="header-format">The header has the following format:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Byte</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>Command ID</td>
+</tr>
+<tr class="row-odd"><td>1-4</td>
+<td>Current tick</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Player ID</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.structures.CommandInfo">
+<em class="property">class </em><code class="descclassname">demoparser.structures.</code><code class="descname">CommandInfo</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/structures.html#CommandInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.structures.CommandInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.structure.Structure</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.structures.DemoHeader">
+<em class="property">class </em><code class="descclassname">demoparser.structures.</code><code class="descname">DemoHeader</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/structures.html#DemoHeader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.structures.DemoHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.structure.Structure</span></code></p>
+<p>1072 Byte header for .DEM file.</p>
+<p>This header has the following format:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Byte</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0-7</td>
+<td>Fixed string ‘HL2DEMO0’.</td>
+</tr>
+<tr class="row-odd"><td>8-11</td>
+<td>Demo file protocol version.</td>
+</tr>
+<tr class="row-even"><td>12-15</td>
+<td>Network protocol version.</td>
+</tr>
+<tr class="row-odd"><td>16-275</td>
+<td>Server name.</td>
+</tr>
+<tr class="row-even"><td>276-535</td>
+<td>Name of client who recorded the demo.</td>
+</tr>
+<tr class="row-odd"><td>536-795</td>
+<td>Map name.</td>
+</tr>
+<tr class="row-even"><td>796-1055</td>
+<td>Game directory.</td>
+</tr>
+<tr class="row-odd"><td>1056-1059</td>
+<td>Playback time in seconds.</td>
+</tr>
+<tr class="row-even"><td>1060-1063</td>
+<td>Number of ticks in demo.</td>
+</tr>
+<tr class="row-odd"><td>1064-1067</td>
+<td>Number of frames in demo.</td>
+</tr>
+<tr class="row-even"><td>1068-1071</td>
+<td>Length of signon data.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.structures.OriginViewAngles">
+<em class="property">class </em><code class="descclassname">demoparser.structures.</code><code class="descname">OriginViewAngles</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/structures.html#OriginViewAngles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.structures.OriginViewAngles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.structure.Structure</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.structures.QAngle">
+<em class="property">class </em><code class="descclassname">demoparser.structures.</code><code class="descname">QAngle</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/structures.html#QAngle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.structures.QAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.structure.Structure</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.structures.SplitCommandInfo">
+<em class="property">class </em><code class="descclassname">demoparser.structures.</code><code class="descname">SplitCommandInfo</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/structures.html#SplitCommandInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.structures.SplitCommandInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.structure.Structure</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.structures.UserInfo">
+<em class="property">class </em><code class="descclassname">demoparser.structures.</code><code class="descname">UserInfo</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/structures.html#UserInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.structures.UserInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.structure.Structure</span></code></p>
+<p>Player data.</p>
+<p>This structure has the following format:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Byte</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0-7</td>
+<td>Version. Same for all players.</td>
+</tr>
+<tr class="row-odd"><td>8-15</td>
+<td>xuid. Some sort of unique ID.</td>
+</tr>
+<tr class="row-even"><td>15-142</td>
+<td>Player name.</td>
+</tr>
+<tr class="row-odd"><td>143-146</td>
+<td>Local server user ID.</td>
+</tr>
+<tr class="row-even"><td>147-179</td>
+<td>GUID</td>
+</tr>
+<tr class="row-odd"><td>180-183</td>
+<td>Friend’s ID.</td>
+</tr>
+<tr class="row-even"><td>184-312</td>
+<td>Friend’s Name.</td>
+</tr>
+<tr class="row-odd"><td>313</td>
+<td>Is player a bot?</td>
+</tr>
+<tr class="row-even"><td>314</td>
+<td>Is player an HLTV proxy?</td>
+</tr>
+<tr class="row-odd"><td>314-329</td>
+<td>Custom files CRC.</td>
+</tr>
+<tr class="row-even"><td>330</td>
+<td>Numbre of files downloaded by server.</td>
+</tr>
+<tr class="row-odd"><td>331-335</td>
+<td>Entity index.</td>
+</tr>
+<tr class="row-even"><td>336-340</td>
+<td>No idea.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="demoparser.structures.Vector">
+<em class="property">class </em><code class="descclassname">demoparser.structures.</code><code class="descname">Vector</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/structures.html#Vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.structures.Vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">suitcase.structure.Structure</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.util">
+<span id="demoparser-util-module"></span><h2>demoparser.util module<a class="headerlink" href="#module-demoparser.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="demoparser.util.parse_entity_update">
+<code class="descclassname">demoparser.util.</code><code class="descname">parse_entity_update</code><span class="sig-paren">(</span><em>Bitbuffer buf</em>, <em>server_class</em><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#demoparser.util.parse_entity_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse entity updates.</p>
+<p>First a list of all property indices is generated. For each
+property referenced by those indices the property’s value is
+decoded. The list of properties and their decoded values are
+collected and returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of updated properties</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="demoparser.util.read_field_index">
+<code class="descclassname">demoparser.util.</code><code class="descname">read_field_index</code><span class="sig-paren">(</span><em>Bitbuffer buf</em>, <em>int last_index</em>, <em>bool new_way</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#demoparser.util.read_field_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read index.</p>
+<p>This method determines the next index into the property
+list for a server class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Next index or -1 if no more indices</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-demoparser" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">demoparser</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../events.html">Events</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">demoparser</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">demoparser</a></li>
+      <li>Next: <a href="demoparser.entities.html" title="next chapter">demoparser.entities package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ryan Moe.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/demoparser.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

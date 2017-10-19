@@ -1,0 +1,442 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demoparser.entities package &#8212; demoparser 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="demoparser package" href="demoparser.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="demoparser-entities-package">
+<h1>demoparser.entities package<a class="headerlink" href="#demoparser-entities-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-demoparser.entities.base">
+<span id="demoparser-entities-base-module"></span><h2>demoparser.entities.base module<a class="headerlink" href="#module-demoparser.entities.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.entities.base.BaseEntity">
+<em class="property">class </em><code class="descclassname">demoparser.entities.base.</code><code class="descname">BaseEntity</code><span class="sig-paren">(</span><em>parser</em>, <em>index</em>, <em>class_id</em>, <em>serial</em>, <em>props</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/base.html#BaseEntity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.base.BaseEntity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="demoparser.entities.base.BaseEntity.get_prop">
+<code class="descname">get_prop</code><span class="sig-paren">(</span><em>table</em>, <em>var</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/base.html#BaseEntity.get_prop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.base.BaseEntity.get_prop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.base.BaseEntity.owner">
+<code class="descname">owner</code><a class="headerlink" href="#demoparser.entities.base.BaseEntity.owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find entity which owns this entity.</p>
+<p>For example, a weapon entity belongs to a player entity.
+Calling this method on a weapon entity would return a
+player.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Owning entity.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.base.BaseEntity.position">
+<code class="descname">position</code><a class="headerlink" href="#demoparser.entities.base.BaseEntity.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the position of this entity.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.base.BaseEntity.server_class">
+<code class="descname">server_class</code><a class="headerlink" href="#demoparser.entities.base.BaseEntity.server_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Server class to which this entity belongs.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.base.BaseEntity.team">
+<code class="descname">team</code><a class="headerlink" href="#demoparser.entities.base.BaseEntity.team" title="Permalink to this definition">¶</a></dt>
+<dd><p>Team to which entity belongs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Team entity</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.base.BaseEntity.team_num">
+<code class="descname">team_num</code><a class="headerlink" href="#demoparser.entities.base.BaseEntity.team_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entity team number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Team number of entity.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.entities.base.BaseEntity.update_prop">
+<code class="descname">update_prop</code><span class="sig-paren">(</span><em>table</em>, <em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/base.html#BaseEntity.update_prop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.base.BaseEntity.update_prop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update entity property.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.entities.entity_list">
+<span id="demoparser-entities-entity-list-module"></span><h2>demoparser.entities.entity_list module<a class="headerlink" href="#module-demoparser.entities.entity_list" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.entities.entity_list.EntityList">
+<em class="property">class </em><code class="descclassname">demoparser.entities.entity_list.</code><code class="descname">EntityList</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/entity_list.html#EntityList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.entity_list.EntityList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">collections.abc.MutableSequence</span></code></p>
+<dl class="method">
+<dt id="demoparser.entities.entity_list.EntityList.get_by_handle">
+<code class="descname">get_by_handle</code><span class="sig-paren">(</span><em>handle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/entity_list.html#EntityList.get_by_handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.entity_list.EntityList.get_by_handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.entities.entity_list.EntityList.get_by_user_id">
+<code class="descname">get_by_user_id</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/entity_list.html#EntityList.get_by_user_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.entity_list.EntityList.get_by_user_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.entities.entity_list.EntityList.get_one">
+<code class="descname">get_one</code><span class="sig-paren">(</span><em>table</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/entity_list.html#EntityList.get_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.entity_list.EntityList.get_one" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.entities.entity_list.EntityList.insert">
+<code class="descname">insert</code><span class="sig-paren">(</span><em>index</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/entity_list.html#EntityList.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.entity_list.EntityList.insert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="demoparser.entities.entity_list.EntityList.new_entity">
+<code class="descname">new_entity</code><span class="sig-paren">(</span><em>index</em>, <em>class_id</em>, <em>serial</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/entity_list.html#EntityList.new_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.entity_list.EntityList.new_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new entity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Created entity.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.entity_list.EntityList.players">
+<code class="descname">players</code><a class="headerlink" href="#demoparser.entities.entity_list.EntityList.players" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all Players in the entity list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.entity_list.EntityList.teams">
+<code class="descname">teams</code><a class="headerlink" href="#demoparser.entities.entity_list.EntityList.teams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all Teams in the entity list.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.entities.game_rules">
+<span id="demoparser-entities-game-rules-module"></span><h2>demoparser.entities.game_rules module<a class="headerlink" href="#module-demoparser.entities.game_rules" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.entities.game_rules.GameRules">
+<em class="property">class </em><code class="descclassname">demoparser.entities.game_rules.</code><code class="descname">GameRules</code><span class="sig-paren">(</span><em>parser</em>, <em>index</em>, <em>class_id</em>, <em>serial</em>, <em>props</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/game_rules.html#GameRules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.game_rules.GameRules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#demoparser.entities.base.BaseEntity" title="demoparser.entities.base.BaseEntity"><code class="xref py py-class docutils literal"><span class="pre">demoparser.entities.base.BaseEntity</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.entities.player">
+<span id="demoparser-entities-player-module"></span><h2>demoparser.entities.player module<a class="headerlink" href="#module-demoparser.entities.player" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.entities.player.Player">
+<em class="property">class </em><code class="descclassname">demoparser.entities.player.</code><code class="descname">Player</code><span class="sig-paren">(</span><em>parser</em>, <em>index</em>, <em>class_id</em>, <em>serial</em>, <em>props</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/player.html#Player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.player.Player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#demoparser.entities.base.BaseEntity" title="demoparser.entities.base.BaseEntity"><code class="xref py py-class docutils literal"><span class="pre">demoparser.entities.base.BaseEntity</span></code></a></p>
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.armor">
+<code class="descname">armor</code><a class="headerlink" href="#demoparser.entities.player.Player.armor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get armor value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.cash">
+<code class="descname">cash</code><a class="headerlink" href="#demoparser.entities.player.Player.cash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.health">
+<code class="descname">health</code><a class="headerlink" href="#demoparser.entities.player.Player.health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current health.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.kills">
+<code class="descname">kills</code><a class="headerlink" href="#demoparser.entities.player.Player.kills" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of kills for this player.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.life_state">
+<code class="descname">life_state</code><a class="headerlink" href="#demoparser.entities.player.Player.life_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get life state.</p>
+<dl class="docutils">
+<dt>0</dt>
+<dd>Alive.</dd>
+<dt>1</dt>
+<dd>Dying. Either the death animation is still playing
+or the player is falling and waiting to hit the ground.</dd>
+<dt>2</dt>
+<dd>Dead. Not moving.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Life state.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.name">
+<code class="descname">name</code><a class="headerlink" href="#demoparser.entities.player.Player.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get player’s name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.place">
+<code class="descname">place</code><a class="headerlink" href="#demoparser.entities.player.Player.place" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get last place player occupied.</p>
+<p>A place refers a named navigation mesh. A navigation mesh
+represents the walkable areas of a map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of last nav mesh occupied.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.position">
+<code class="descname">position</code><a class="headerlink" href="#demoparser.entities.player.Player.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Position vector.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="demoparser.entities.player.Player.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>props=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/player.html#Player.serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.player.Player.serialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.steam_id">
+<code class="descname">steam_id</code><a class="headerlink" href="#demoparser.entities.player.Player.steam_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Steam ID.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.view_angle">
+<code class="descname">view_angle</code><a class="headerlink" href="#demoparser.entities.player.Player.view_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current view angle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Tuple of pitch and yaw.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.player.Player.weapon">
+<code class="descname">weapon</code><a class="headerlink" href="#demoparser.entities.player.Player.weapon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current weapon.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.entities.team">
+<span id="demoparser-entities-team-module"></span><h2>demoparser.entities.team module<a class="headerlink" href="#module-demoparser.entities.team" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.entities.team.Team">
+<em class="property">class </em><code class="descclassname">demoparser.entities.team.</code><code class="descname">Team</code><span class="sig-paren">(</span><em>parser</em>, <em>index</em>, <em>class_id</em>, <em>serial</em>, <em>props</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/team.html#Team"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.team.Team" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#demoparser.entities.base.BaseEntity" title="demoparser.entities.base.BaseEntity"><code class="xref py py-class docutils literal"><span class="pre">demoparser.entities.base.BaseEntity</span></code></a></p>
+<dl class="attribute">
+<dt id="demoparser.entities.team.Team.clan">
+<code class="descname">clan</code><a class="headerlink" href="#demoparser.entities.team.Team.clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clan name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.team.Team.name">
+<code class="descname">name</code><a class="headerlink" href="#demoparser.entities.team.Team.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Team name. Either ‘T’ or ‘CT’.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.team.Team.score">
+<code class="descname">score</code><a class="headerlink" href="#demoparser.entities.team.Team.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Final team score.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.team.Team.score_first_half">
+<code class="descname">score_first_half</code><a class="headerlink" href="#demoparser.entities.team.Team.score_first_half" title="Permalink to this definition">¶</a></dt>
+<dd><p>Score for first half of match.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.team.Team.score_second_half">
+<code class="descname">score_second_half</code><a class="headerlink" href="#demoparser.entities.team.Team.score_second_half" title="Permalink to this definition">¶</a></dt>
+<dd><p>Score for second half of match.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.entities.weapon">
+<span id="demoparser-entities-weapon-module"></span><h2>demoparser.entities.weapon module<a class="headerlink" href="#module-demoparser.entities.weapon" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="demoparser.entities.weapon.Weapon">
+<em class="property">class </em><code class="descclassname">demoparser.entities.weapon.</code><code class="descname">Weapon</code><span class="sig-paren">(</span><em>parser</em>, <em>index</em>, <em>class_id</em>, <em>serial</em>, <em>props</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/demoparser/entities/weapon.html#Weapon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#demoparser.entities.weapon.Weapon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#demoparser.entities.base.BaseEntity" title="demoparser.entities.base.BaseEntity"><code class="xref py py-class docutils literal"><span class="pre">demoparser.entities.base.BaseEntity</span></code></a></p>
+<dl class="attribute">
+<dt id="demoparser.entities.weapon.Weapon.item_index">
+<code class="descname">item_index</code><a class="headerlink" href="#demoparser.entities.weapon.Weapon.item_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.weapon.Weapon.name">
+<code class="descname">name</code><a class="headerlink" href="#demoparser.entities.weapon.Weapon.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="demoparser.entities.weapon.Weapon.previous_owner">
+<code class="descname">previous_owner</code><a class="headerlink" href="#demoparser.entities.weapon.Weapon.previous_owner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-demoparser.entities">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-demoparser.entities" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">demoparser</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../events.html">Events</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">demoparser</a><ul>
+  <li><a href="demoparser.html">demoparser package</a><ul>
+      <li>Previous: <a href="demoparser.html" title="previous chapter">demoparser package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ryan Moe.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/demoparser.entities.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

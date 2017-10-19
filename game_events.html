@@ -1,0 +1,346 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>&lt;no title&gt; &#8212; demoparser 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <ul class="simple">
+<li>achievement_earned</li>
+<li>achievement_earned_local</li>
+<li>achievement_event</li>
+<li>achievement_increment</li>
+<li>achievement_info_loaded</li>
+<li>achievement_write_failed</li>
+<li>add_bullet_hit_marker</li>
+<li>add_player_sonar_icon</li>
+<li>ammo_pickup</li>
+<li>announce_phase_end</li>
+<li>assassination_target_killed</li>
+<li>begin_new_match</li>
+<li>bomb_abortdefuse</li>
+<li>bomb_abortplant</li>
+<li>bomb_beep</li>
+<li>bomb_begindefuse</li>
+<li>bomb_beginplant</li>
+<li>bomb_defused</li>
+<li>bomb_dropped</li>
+<li>bomb_exploded</li>
+<li>bomb_pickup</li>
+<li>bomb_planted</li>
+<li>bonus_updated</li>
+<li>bot_takeover</li>
+<li>break_breakable</li>
+<li>break_prop</li>
+<li>bullet_impact</li>
+<li>buymenu_close</li>
+<li>buymenu_open</li>
+<li>buytime_ended</li>
+<li>cart_updated</li>
+<li>client_disconnect</li>
+<li>client_loadout_changed</li>
+<li>cs_game_disconnected</li>
+<li>cs_intermission</li>
+<li>cs_match_end_restart</li>
+<li>cs_pre_restart</li>
+<li>cs_prev_next_spectator</li>
+<li>cs_round_final_beep</li>
+<li>cs_round_start_beep</li>
+<li>cs_win_panel_match</li>
+<li>cs_win_panel_round</li>
+<li>decoy_detonate</li>
+<li>decoy_firing</li>
+<li>decoy_started</li>
+<li>defuser_dropped</li>
+<li>defuser_pickup</li>
+<li>difficulty_changed</li>
+<li>dm_bonus_weapon_start</li>
+<li>door_moving</li>
+<li>enable_restart_voting</li>
+<li>endmatch_cmm_start_reveal_items</li>
+<li>endmatch_mapvote_selecting_map</li>
+<li>enter_bombzone</li>
+<li>enter_buyzone</li>
+<li>enter_rescue_zone</li>
+<li>entity_killed</li>
+<li>entity_visible</li>
+<li>exit_bombzone</li>
+<li>exit_buyzone</li>
+<li>exit_rescue_zone</li>
+<li>finale_start</li>
+<li>flare_ignite_npc</li>
+<li>flashbang_detonate</li>
+<li>freezecam_started</li>
+<li>game_end</li>
+<li>game_init</li>
+<li>gameinstructor_draw</li>
+<li>gameinstructor_nodraw</li>
+<li>game_message</li>
+<li>game_newmap</li>
+<li>game_start</li>
+<li>gameui_hidden</li>
+<li>gc_connected</li>
+<li>gg_bonus_grenade_achieved</li>
+<li>gg_final_weapon_achieved</li>
+<li>gg_killed_enemy</li>
+<li>gg_leader</li>
+<li>gg_player_impending_upgrade</li>
+<li>gg_player_levelup</li>
+<li>ggprogressive_player_levelup</li>
+<li>gg_reset_round_start_sounds</li>
+<li>gg_team_leader</li>
+<li>ggtr_player_levelup</li>
+<li>grenade_bounce</li>
+<li>grenade_thrown</li>
+<li>hegrenade_detonate</li>
+<li>helicopter_grenade_punt_miss</li>
+<li>hide_freezepanel</li>
+<li>hltv_cameraman</li>
+<li>hltv_changed_mode</li>
+<li>hltv_changed_target</li>
+<li>hltv_chase</li>
+<li>hltv_chat</li>
+<li>hltv_fixed</li>
+<li>hltv_message</li>
+<li>hltv_rank_camera</li>
+<li>hltv_rank_entity</li>
+<li>hltv_status</li>
+<li>hltv_title</li>
+<li>hostage_call_for_help</li>
+<li>hostage_follows</li>
+<li>hostage_hurt</li>
+<li>hostage_killed</li>
+<li>hostage_rescued</li>
+<li>hostage_rescued_all</li>
+<li>hostage_stops_following</li>
+<li>hostname_changed</li>
+<li>inferno_expire</li>
+<li>inferno_extinguish</li>
+<li>inferno_startburn</li>
+<li>inspect_weapon</li>
+<li>instructor_server_hint_create</li>
+<li>instructor_server_hint_stop</li>
+<li>inventory_updated</li>
+<li>item_equip</li>
+<li>item_found</li>
+<li>item_pickup</li>
+<li>item_purchase</li>
+<li>item_remove</li>
+<li>item_schema_initialized</li>
+<li>items_gifted</li>
+<li>jointeam_failed</li>
+<li>map_transition</li>
+<li>match_end_conditions</li>
+<li>material_default_complete</li>
+<li>mb_input_lock_cancel</li>
+<li>mb_input_lock_success</li>
+<li>molotov_detonate</li>
+<li>nav_blocked</li>
+<li>nav_generate</li>
+<li>nextlevel_changed</li>
+<li>other_death</li>
+<li>physgun_pickup</li>
+<li>player_activate</li>
+<li>player_avenged_teammate</li>
+<li>player_blind</li>
+<li>player_changename</li>
+<li>player_chat</li>
+<li>player_class</li>
+<li>player_connect</li>
+<li>player_connect_full</li>
+<li>player_death</li>
+<li>player_decal</li>
+<li>player_disconnect</li>
+<li>player_falldamage</li>
+<li>player_footstep</li>
+<li>player_given_c4</li>
+<li>player_hintmessage</li>
+<li>player_hurt</li>
+<li>player_info</li>
+<li>player_jump</li>
+<li>player_radio</li>
+<li>player_reset_vote</li>
+<li>player_say</li>
+<li>player_score</li>
+<li>player_shoot</li>
+<li>player_spawn</li>
+<li>player_spawned</li>
+<li>player_stats_updated</li>
+<li>player_team</li>
+<li>player_use</li>
+<li>ragdoll_dissolved</li>
+<li>read_game_titledata</li>
+<li>repost_xbox_achievements</li>
+<li>reset_game_titledata</li>
+<li>reset_player_controls</li>
+<li>round_announce_final</li>
+<li>round_announce_last_round_half</li>
+<li>round_announce_match_point</li>
+<li>round_announce_match_start</li>
+<li>round_announce_warmup</li>
+<li>round_end</li>
+<li>round_end_upload_stats</li>
+<li>round_freeze_end</li>
+<li>round_mvp</li>
+<li>round_officially_ended</li>
+<li>round_poststart</li>
+<li>round_prestart</li>
+<li>round_start</li>
+<li>round_start_pre_entity</li>
+<li>round_time_warning</li>
+<li>seasoncoin_levelup</li>
+<li>server_addban</li>
+<li>server_cvar</li>
+<li>server_message</li>
+<li>server_pre_shutdown</li>
+<li>server_removeban</li>
+<li>server_shutdown</li>
+<li>server_spawn</li>
+<li>set_instructor_group_enabled</li>
+<li>sfuievent</li>
+<li>show_freezepanel</li>
+<li>silencer_detach</li>
+<li>silencer_off</li>
+<li>silencer_on</li>
+<li>smokegrenade_detonate</li>
+<li>smokegrenade_expired</li>
+<li>spec_mode_updated</li>
+<li>spec_target_updated</li>
+<li>start_halftime</li>
+<li>start_vote</li>
+<li>store_pricesheet_updated</li>
+<li>survival_announce_phase</li>
+<li>switch_team</li>
+<li>tagrenade_detonate</li>
+<li>teamchange_pending</li>
+<li>team_info</li>
+<li>teamplay_broadcast_audio</li>
+<li>teamplay_round_start</li>
+<li>team_score</li>
+<li>tournament_reward</li>
+<li>tr_exit_hint_trigger</li>
+<li>trial_time_expired</li>
+<li>tr_mark_best_time</li>
+<li>tr_mark_complete</li>
+<li>tr_player_flashbanged</li>
+<li>tr_show_exit_msgbox</li>
+<li>tr_show_finish_msgbox</li>
+<li>ugc_file_download_finished</li>
+<li>ugc_file_download_start</li>
+<li>ugc_map_download_error</li>
+<li>ugc_map_info_received</li>
+<li>ugc_map_unsubscribed</li>
+<li>update_matchmaking_stats</li>
+<li>user_data_downloaded</li>
+<li>verify_client_hit</li>
+<li>vip_escaped</li>
+<li>vip_killed</li>
+<li>vote_cast</li>
+<li>vote_changed</li>
+<li>vote_ended</li>
+<li>vote_failed</li>
+<li>vote_options</li>
+<li>vote_passed</li>
+<li>vote_started</li>
+<li>weapon_fire</li>
+<li>weapon_fire_on_empty</li>
+<li>weapon_outofammo</li>
+<li>weapon_reload</li>
+<li>weapon_zoom</li>
+<li>weapon_zoom_rifle</li>
+<li>write_game_titledata</li>
+<li>write_profile_data</li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">demoparser</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ryan Moe.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/game_events.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
