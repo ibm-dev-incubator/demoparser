@@ -18,6 +18,14 @@ from demoparser.structures import DemoHeader
 from demoparser.util cimport parse_entity_update
 
 
+cdef class CommandError(Exception):
+    pass
+
+
+cdef class ClassNotFoundError(Exception):
+    pass
+
+
 cdef bint _key_sort(dict item):
     if item.get('collapsible', True) is False:
         return 0
@@ -89,11 +97,8 @@ cdef class DemoFile:
 
         Each time an event is trigged each registered callback
         will be called with the arguments provided to this method.
-
-        A separate set of internal callbacks is maintained because
-        they require a different calling method. Internal callbacks
-        are callbacks functions that belong to a DemoFile instance.
         """
+        # cpdef functions don't support *args syntax
         if args is None:
             args = []
 
@@ -110,6 +115,8 @@ cdef class DemoFile:
         :emits: :ref:`tick_start <event_tick_start>`, \
                 :ref:`tick_end <event_tick_end>`, \
                 :ref:`end <event_end>`
+
+        :raises: CommandError
         """
         while True:
             header = self.byte_buf.read_command_header()
@@ -137,7 +144,7 @@ cdef class DemoFile:
                 self.emit('end')
                 break
             else:
-                raise Exception("Unrecognized command")
+                raise CommandError("Unrecognized command")
 
     cpdef void handle_user_message(self, object msg):
         """Handle user message.
@@ -480,11 +487,12 @@ cdef class DemoFile:
         to the Protobuf class naming convention.
 
         :returns: Protobuf class
+        :raises: ClassNotFoundError
         """
         cls = self.merged_enums[msg_type]
 
         if not cls:
-            raise Exception(
+            raise ClassNotFoundError(
                 "Class for message type {} not found.".format(msg_type)
             )
 
@@ -542,6 +550,18 @@ cdef class DemoFile:
 
     cpdef object parse_instance_baseline(self, Bitbuffer buf,
                                          unsigned int class_id):
+        """Parse baseline.
+
+        Baselines serve as default data for entities of type
+        `class_id`.
+
+        :param buf: Data to read
+        :type buf: Bitbuffer
+        :param class_id: Server class ID
+        :type class_id: unsigned int
+
+        :returns: baseline for `class_id`.
+        """
         class_baseline = OrderedDict()
         server_class = self.server_classes[class_id]
 

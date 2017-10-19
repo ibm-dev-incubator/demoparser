@@ -6,7 +6,7 @@ from suitcase.fields import BaseFixedByteSequence
 
 
 class SLFloat32(BaseStructField):
-    """Signed Little Endian 32-bit float field"""
+    """Signed Little Endian 32-bit float field."""
     PACK_FORMAT = UNPACK_FORMAT = b"<f"
 
     def unpack(self, data, **kwargs):
@@ -14,7 +14,11 @@ class SLFloat32(BaseStructField):
 
 
 class UBInt32Sequence(BaseFixedByteSequence):
-    "A sequence of unsigned, big-endian 32 bit integers"
+    """A sequence of unsigned, big-endian 32 bit integers.
+
+    :param length: Number of 32-bit integers in sequence.
+    :type length: Integer
+    """
 
     def __init__(self, length, **kwargs):
         super().__init__(lambda l: ">" + "I" * l, length, **kwargs)
@@ -22,8 +26,13 @@ class UBInt32Sequence(BaseFixedByteSequence):
 
 
 class FixedLengthString(BaseField):
-    """
-    Reads a fixed number of bytes (interpreted as ASCII) from input stream
+    """A string of a fixed number of bytes.
+
+    The specified number of bytes are read and then any null
+    bytes are stripped from the result.
+
+    :param length: Number of bytes to read.
+    :type length: Integer
     """
 
     def __init__(self, length, **kwargs):
@@ -32,7 +41,7 @@ class FixedLengthString(BaseField):
 
     @property
     def bytes_required(self):
-        "Number of bytes to read from stream"
+        """Number of bytes to read from stream."""
         return self.length
 
     def pack(self, stream):

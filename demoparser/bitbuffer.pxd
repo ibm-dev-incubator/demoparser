@@ -1,6 +1,5 @@
 cdef class Bitbuffer:
-    cdef public unsigned int num_bytes
-    cdef public unsigned int num_bits
+    cdef unsigned int num_bytes
     cdef unsigned int * data
     cdef unsigned int index
     cdef unsigned int length

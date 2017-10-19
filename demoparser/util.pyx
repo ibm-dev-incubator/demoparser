@@ -7,7 +7,7 @@ cpdef int read_field_index(Bitbuffer buf, int last_index, bint new_way):
     """Read index.
 
     This method determines the next index into the property
-    list for server class.
+    list for a server class.
 
     :returns: Next index or -1 if no more indices
     """

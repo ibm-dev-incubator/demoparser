@@ -1,5 +1,6 @@
 import pytest
 
+from demoparser.demofile import CommandError
 from demoparser.demofile import DemoFile
 from demoparser.structures import CommandHeader
 
@@ -13,7 +14,7 @@ def test_parse_invalid_command():
     header.command = 99
 
     df = DemoFile(data + header.pack())
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(CommandError) as exc:
         df.parse()
 
     assert 'Unrecognized command' in str(exc.value)

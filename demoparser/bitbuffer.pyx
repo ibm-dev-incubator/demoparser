@@ -44,10 +44,29 @@ cdef unsigned int[33] mask_table = [
 
 
 cdef class Bitbuffer:
+    r"""Parse a stream of bits from a series of bytes.
 
-    def __init__(self, data, num_bytes=None, num_bits=None):
-        self.num_bytes = num_bytes or len(data)
-        self.num_bits = num_bits or self.num_bytes << 3
+
+    Data is cast to unsigned int* and read one unsigned int
+    at a time. As an unsigned int is 32 bits this has the
+    effect of reading 4 bytes at once. Reads can span integer
+    boundaries and the consecutive integers will be merged
+    correctly.
+
+    :param data: Data to parse bit-by-bit
+    :type data: bytes
+
+    :Example:
+
+    >>> buf = Bitbuffer(b'\x11\x22')
+    >>> buf.read_uint_bits(8)
+    17
+    >>> buf.read_uint_bits(8)
+    34
+    """
+
+    def __init__(self, data):
+        self.num_bytes = len(data)
 
         # We have to keep a reference to the Python object around.
         # It will be garbage-collected when __init__ exits otherwise.

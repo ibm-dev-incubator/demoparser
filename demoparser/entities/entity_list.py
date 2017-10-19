@@ -15,10 +15,10 @@ class EntityList(MutableSequence):
         self.parser = parser
         self._entities = [None] * (1 << consts.MAX_EDICT_BITS)
         self.class_map = {
-            'DT_CSPlayer': Player,
-            'DT_Team': Team,
-            'DT_CSGameRules': GameRules,
-            'DT_WeaponCSBase': Weapon
+            35: Player,
+            138: Team,
+            200: Weapon,
+            80: GameRules
         }
         self._cache = {}
 
@@ -38,17 +38,15 @@ class EntityList(MutableSequence):
         self._entities.insert(index, value)
 
     def new_entity(self, index, class_id, serial):
+        """Create new entity.
+
+        :returns: Created entity.
+        """
         if self._entities[index]:
             self._entities[index] = None
 
         baseline = self.parser.instance_baselines[class_id]
-        cls = BaseEntity
-
-        if baseline:
-            for table in self.class_map:
-                if baseline.get(table):
-                    cls = self.class_map[table]
-                    break
+        cls = self.class_map.get(class_id, BaseEntity)
 
         new_baseline = pickle.loads(pickle.dumps(baseline))
         assert baseline == new_baseline
@@ -62,10 +60,12 @@ class EntityList(MutableSequence):
 
     @property
     def players(self):
+        """Get all Players in the entity list."""
         return self._get_by_class(Player)
 
     @property
     def teams(self):
+        """Get all Teams in the entity list."""
         return self._get_by_class(Team)
 
     def get_by_user_id(self, user_id):

@@ -5,13 +5,15 @@ from demoparser.structures import CommandHeader
 
 
 class Bytebuffer:
-    r"""
-    Parse a stream of bytes from a .DEM file.
+    r"""Parse a stream of bytes from a .DEM file.
 
     This class provdes convenience methods for parsing
     .DEM files. It handles unpacking bytes to different
     data types, reading variable-length integers, reading
     strings, and creating Bitbuffers.
+
+    :param data: Buffer data
+    :type data: bytes
 
     :Example:
 
@@ -73,7 +75,7 @@ class Bytebuffer:
         return seq
 
     def read_packet_data(self):
-        """Read a demo packet.
+        r"""Read a demo packet.
 
         Each packet consists of a command and data.
         The command is an ID that references either a NET\_ or

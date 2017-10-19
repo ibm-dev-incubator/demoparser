@@ -7,6 +7,16 @@ cimport cython
 
 
 cdef class Decoder:
+    """Decode a property.
+
+    Properties of server classes are encoded differently depending
+    on the type of the property.
+
+    :param buf: Raw buffer data used for decoding
+    :type buf: Bitbuffer
+    :param prop: Property to decode
+    :type prop: object
+    """
 
     def __cinit__(self, Bitbuffer buf, object prop):
         self.buf = buf
@@ -44,8 +54,6 @@ cdef class Decoder:
         num_bits field of the property. If the property
         has the SPROP_UNSIGNED flag set the number will be
         read as an unsigned int.
-
-        :returns: long
         """
         cdef long ret
         cdef int num_bits = self.prop.num_bits
@@ -61,6 +69,11 @@ cdef class Decoder:
 
     @cython.cdivision(True)
     cpdef float decode_float(self):
+        """Decode a floating point value.
+
+        First the value is decoded as a special float. If that
+        returns NaN then a normal floating point value is calculated.
+        """
         cdef float special = self.decode_special_float()
         if not isnan(special):
             return special
@@ -147,6 +160,11 @@ cdef class Decoder:
         assert False, 'int64'
 
     cpdef list decode_array(self):
+        """Decode array.
+
+        Arrays contain one or more elements (including arrays) which
+        are recursively decoded.
+        """
         cdef unsigned int bits, idx, num_elements
 
         max_elements = self.prop.num_elements
@@ -198,8 +216,6 @@ cdef class Decoder:
         | CELL_COORD_INTEGRAL     | Like CELL_COORD but coordinates are  |
         |                         | rounded to integral boundaries.      |
         +-------------------------+--------------------------------------+
-
-        :returns: float
         """
         cdef float val = NAN
         cdef unsigned int f
