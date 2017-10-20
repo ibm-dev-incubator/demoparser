@@ -6,7 +6,9 @@
 Welcome to demoparser's documentation!
 ======================================
 
-.. include:: intro.rst
+.. include:: ../../README.rst
+
+Contents:
 
 .. toctree::
    :maxdepth: 1
