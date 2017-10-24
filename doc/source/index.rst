@@ -13,5 +13,7 @@ Contents:
 .. toctree::
    :maxdepth: 1
 
+   usage
    events
    API Documentation <api/modules>
+

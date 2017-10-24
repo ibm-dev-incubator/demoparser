@@ -1,7 +1,7 @@
 ``demoparser`` is a library for parsing CS:GO demo files.
 
 As the file is processed events are emitted for which callbacks can
-be registered. This is how 
+be registered.
 
 Quick start
 -----------
