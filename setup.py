@@ -29,7 +29,8 @@ setup(
     ext_modules=cythonize(
         extensions, compiler_directives={
             "embedsignature": True,
-            "linetrace": True
+            "linetrace": True,
+            "language_level": 3
         }
     )
 )
