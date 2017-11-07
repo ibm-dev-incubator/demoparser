@@ -3,4 +3,3 @@ include tox.ini
 recursive-include demoparser *.pyx
 recursive-include demoparser *.pxd
 prune example
-global-exclude demoparser/protobufs *.proto
