@@ -9,10 +9,11 @@ class BaseEntity:
 
     def update_prop(self, table, key, value):
         """Update entity property."""
-        self.props[table][key] = value
+        if table in self.props and key in self.props[table]:
+            self.props[table][key] = value
 
     def get_prop(self, table, var):
-        return self.props[table][var]
+        return self.props.get(table, {}).get(var)
 
     @property
     def position(self):
@@ -58,3 +59,13 @@ class BaseEntity:
         return self.parser.entities.get_by_handle(
             self.get_prop('DT_BaseEntity', 'm_hOwnerEntity')
         )
+
+    def properties(self):
+        result = {
+            'index': self.index,
+            'class_id': self.class_id,
+            'serial': self.serial,
+            'position': self.position,
+        }
+
+        return result

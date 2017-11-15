@@ -50,7 +50,7 @@ cdef class DemoFile:
     cdef list data_tables
     cdef list string_tables
     cdef list server_classes
-    cdef object game_events
+    cdef public object game_events
     cdef object pending_baselines
     cdef public object instance_baselines
     cdef public object entities

@@ -15,10 +15,10 @@ class EntityList(MutableSequence):
         self.parser = parser
         self._entities = [None] * (1 << consts.MAX_EDICT_BITS)
         self.class_map = {
-            35: Player,
-            138: Team,
-            200: Weapon,
-            80: GameRules
+            'DT_BasePlayer': Player,
+            'DT_Team': Team,
+            'DT_WeaponCSBase': Weapon,
+            'DT_CSGameRules': GameRules
         }
         self._cache = {}
 
@@ -46,7 +46,16 @@ class EntityList(MutableSequence):
             self._entities[index] = None
 
         baseline = self.parser.instance_baselines[class_id]
-        cls = self.class_map.get(class_id, BaseEntity)
+
+        cls = BaseEntity
+        # Find an entity class based on which tables are in its baseline.
+        # Class IDs don't seem to be consistent across demo files so all
+        # you can do is assume if an entity baseline has 'DT_Team' it must
+        # be a Team.
+        for table in baseline:
+            if table in self.class_map:
+                cls = self.class_map[table]
+                break
 
         new_baseline = pickle.loads(pickle.dumps(baseline))
         assert baseline == new_baseline
@@ -68,6 +77,11 @@ class EntityList(MutableSequence):
         """Get all Teams in the entity list."""
         return self._get_by_class(Team)
 
+    @property
+    def weapons(self):
+        """Get all Weapons in the entity list."""
+        return self._get_by_class(Weapon)
+
     def get_by_user_id(self, user_id):
         users = self.parser.table_by_name('userinfo')['entries']
 
@@ -76,6 +90,8 @@ class EntityList(MutableSequence):
                 return self._entities[idx + 1]
 
     def get_by_handle(self, handle):
+        if not handle:
+            return
         ent = self._entities[handle & consts.NETWORKED_EHANDLE_ENT_ENTRY_MASK]
         if ent is None or ent.serial != (handle >> consts.MAX_EDICT_BITS):
             return

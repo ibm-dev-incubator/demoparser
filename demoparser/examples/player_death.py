@@ -21,8 +21,8 @@ def death(event, msg):
         print("{} killed by {} with {}. Headshot? {}.\n"
               "Attacker: health = {} position = {}\n"
               "Victim: position = {}".format(
-                  victim.name.decode(),
-                  attacker.name.decode(),
+                  victim.name,
+                  attacker.name,
                   weapon,
                   'Yes' if headshot else 'No',
                   attacker.health,

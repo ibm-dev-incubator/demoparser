@@ -1,4 +1,5 @@
 from demoparser.entities import BaseEntity
+import inspect
 
 
 class Player(BaseEntity):
@@ -28,14 +29,13 @@ class Player(BaseEntity):
     def name(self):
         """Get player's name."""
         if isinstance(self.user_info, bytes):
-            print(len(self.user_info), self.user_info)
             return ""
-        return self.user_info.name
+        return self.user_info.name.decode('utf-8')
 
     @property
     def steam_id(self):
         """Get Steam ID."""
-        return self.user_info.guid
+        return self.user_info.guid.decode('utf-8')
 
     @property
     def position(self):
@@ -120,5 +120,18 @@ class Player(BaseEntity):
             self.get_prop('DT_BaseCombatCharacter', 'm_hActiveWeapon')
         )
 
-    def serialize(self, props=None):
-        props = props or self._serialize_props
+    def properties(self):
+        result = {
+            'index': self.index,
+            'class_id': self.class_id,
+            'serial': self.serial,
+        }
+
+        for name, value in inspect.getmembers(self):
+            prop_attr = getattr(self.__class__, name, None)
+            if inspect.isdatadescriptor(prop_attr):
+                attr = getattr(self, name, None)
+                if not isinstance(attr, BaseEntity):
+                    result[name] = value
+
+        return result
