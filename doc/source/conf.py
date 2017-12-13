@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'demoparser'
+project = 'csgo-demoparser'
 copyright = '2017, Ryan Moe'
 author = 'Ryan Moe'
 

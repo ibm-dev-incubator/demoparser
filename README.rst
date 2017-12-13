@@ -1,4 +1,4 @@
-``demoparser`` is a library for parsing CS:GO demo files.
+``csgo-demoparser`` is a library for parsing CS:GO demo files.
 
 As the file is processed events are emitted for which callbacks can
 be registered.
@@ -8,7 +8,7 @@ Quick start
 
 1. Install::
 
-        pip install demoparser
+        pip install csgo-demoparser
 
 2. Parse a demo::
 
