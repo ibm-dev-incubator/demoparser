@@ -331,8 +331,12 @@ cdef class DemoFile:
 
         table = {
             'name': msg.name,
-            'entries': [{'entry': None, 'user_data': None}] * msg.max_entries
+            'entries': []
         }
+
+        for i in range(msg.max_entries):
+            table['entries'].append({'entry': None, 'user_data': None})
+
         self.string_tables.append(table)
         self.parse_string_table_update(
             buf, table, msg.num_entries, msg.max_entries,
@@ -357,13 +361,16 @@ cdef class DemoFile:
         dict_encode = buf.read_bit()
         assert not dict_encode, 'Dictionary encoding not supported'
 
+        index = 0
+        last_index = -1
         for i in range(num_entries):
-            index = i
+            index = last_index + 1
             entry = None
 
             if not buf.read_bit():
                 index = buf.read_uint_bits(entry_bits)
 
+            last_index = index
             assert index >=0 and index <= max_entries
 
             # entry changed?
