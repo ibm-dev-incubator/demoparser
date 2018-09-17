@@ -119,6 +119,7 @@ message CGCToGCMsgRouted {
 	optional uint32 msg_type = 1;
 	optional fixed64 sender_id = 2;
 	optional bytes net_message = 3;
+	optional uint32 ip = 4;
 }
 
 message CGCToGCMsgRoutedReply {
@@ -152,6 +153,7 @@ message CMsgClientHello {
 	optional uint32 partner_srcid = 5;
 	optional uint32 partner_accountid = 6;
 	optional uint32 partner_accountflags = 7;
+	optional uint32 partner_accountbalance = 8;
 }
 
 message CMsgServerHello {
@@ -177,6 +179,9 @@ message CMsgClientWelcome {
 	optional bytes game_data2 = 6;
 	optional uint32 rtime32_gc_welcome_timestamp = 7;
 	optional uint32 currency = 8;
+	optional uint32 balance = 9;
+	optional string balance_url = 10;
+	optional string txn_country_code = 11;
 }
 
 message CMsgConnectionStatus {
@@ -233,5 +238,24 @@ message CWorkshop_SetItemPaymentRules_Request {
 }
 
 message CWorkshop_SetItemPaymentRules_Response {
+}
+
+message CGameServers_AggregationQuery_Request {
+	optional string filter = 1;
+	repeated string group_fields = 3;
+}
+
+message CGameServers_AggregationQuery_Response {
+	message Group {
+		repeated string group_values = 1;
+		optional uint32 servers_empty = 2;
+		optional uint32 servers_full = 3;
+		optional uint32 servers_total = 4;
+		optional uint32 players_humans = 5;
+		optional uint32 players_bots = 6;
+		optional uint32 player_capacity = 7;
+	}
+
+	repeated .CGameServers_AggregationQuery_Response.Group groups = 1;
 }
 
