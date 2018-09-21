@@ -62,7 +62,7 @@ cdef class DemoFile:
     cdef object byte_buf
     cdef object header
 
-    def __cinit__(self, bytes data):
+    def __cinit__(self, bytes data, bint parse_entities=True):
         self.header = DemoHeader.from_data(data[:1072])
         self.byte_buf = Bytebuffer(data[1072:])
 
@@ -92,6 +92,11 @@ cdef class DemoFile:
             'string_table_update': [self.table_updated]
         })
 
+        if not parse_entities:
+            self.deregister_callback('svc_UpdateStringTable')
+            self.deregister_callback('svc_PacketEntities')
+            self.deregister_callback('string_table_update')
+
     cpdef void emit(self, str event, args=None):
         """Run callback functions for an event.
 
@@ -108,6 +113,9 @@ cdef class DemoFile:
     cpdef add_callback(self, event, func):
         """Register a callback function for an event."""
         self.callbacks[event].append(func)
+
+    cpdef deregister_callback(self, event):
+        self.callbacks[event] = []
 
     cpdef void parse(self) except *:
         """Parse the demofile.
