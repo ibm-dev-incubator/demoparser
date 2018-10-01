@@ -60,7 +60,7 @@ cdef class DemoFile:
     cdef dict user_messages
     cdef unsigned int server_class_bits
     cdef object byte_buf
-    cdef object header
+    cdef public object header
 
     def __cinit__(self, bytes data, bint parse_entities=True):
         self.header = DemoHeader.from_data(data[:1072])
