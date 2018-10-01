@@ -65,8 +65,27 @@ class Player(BaseEntity):
 
     @property
     def cash(self):
-        """Get """
+        """Get Cash
+        
+        :returns: available cash to spend
+        """
         return self.get_prop('DT_CSPlayer', 'm_iAccount')
+    
+    @property
+    def equipment_value(self):
+        """Get current equipment value
+        
+        :returns: current equipment value
+        """
+        return self.get_prop('DT_CSPlayer', 'm_unCurrentEquipmentValue')
+    
+    @property
+    def is_in_buy_zone(self):
+        """Check if player is in buy zone
+        
+        :returns: boolean
+        """
+        return self.get_prop('DT_CSPlayer', 'm_bInBuyZone')
 
     @property
     def life_state(self):
