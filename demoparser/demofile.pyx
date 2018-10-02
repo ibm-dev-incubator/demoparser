@@ -316,7 +316,7 @@ cdef class DemoFile:
         buf = Bitbuffer(msg.string_data)
 
         table = self.string_tables[msg.table_id]
-        
+
         if table['name'] in ('userinfo', 'modelprecache', 'instancebaseline'):
             self.parse_string_table_update(
                 buf, table, msg.num_changed_entries, len(table['entries']),
