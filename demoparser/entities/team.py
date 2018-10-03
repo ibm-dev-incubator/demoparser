@@ -12,6 +12,11 @@ class Team(BaseEntity):
         self.props = props
 
     @property
+    def tid(self):
+        """Team id."""
+        return self.get_prop('DT_Team', 'm_iTeamNum')
+
+    @property
     def name(self):
         """Team name. Either 'T' or 'CT'."""
         return self.get_prop('DT_Team', 'm_szTeamname')

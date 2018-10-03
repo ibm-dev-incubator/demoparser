@@ -60,7 +60,7 @@ cdef class DemoFile:
     cdef dict user_messages
     cdef unsigned int server_class_bits
     cdef object byte_buf
-    cdef object header
+    cdef public object header
 
     def __cinit__(self, bytes data, bint parse_entities=True):
         self.header = DemoHeader.from_data(data[:1072])
@@ -317,10 +317,11 @@ cdef class DemoFile:
 
         table = self.string_tables[msg.table_id]
 
-        self.parse_string_table_update(
-            buf, table, msg.num_changed_entries, len(table['entries']),
-            0, False
-        )
+        if table['name'] in ('userinfo', 'modelprecache', 'instancebaseline'):
+            self.parse_string_table_update(
+                buf, table, msg.num_changed_entries, len(table['entries']),
+                0, False
+            )
 
     cpdef void create_string_table(self, object msg):
         """Create a string table.
