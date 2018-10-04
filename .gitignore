@@ -16,3 +16,5 @@ doc/_build
 .coverage
 build
 dist
+.DS_Store
+test.py

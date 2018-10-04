@@ -1,6 +1,6 @@
 import "google/protobuf/descriptor.proto";
-import "demoparser/protobufs/netmessages.proto";
-import "demoparser/protobufs/cstrike15_gcmessages.proto";
+import "netmessages.proto";
+import "cstrike15_gcmessages.proto";
 
 option optimize_for = SPEED;
 option cc_generic_services = false;
