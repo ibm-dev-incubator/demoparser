@@ -1,4 +1,4 @@
-import "demoparser/protobufs/netmessages.proto";
+import "netmessages.proto";
 
 enum EHitGroup {
 	EHG_Generic = 0;

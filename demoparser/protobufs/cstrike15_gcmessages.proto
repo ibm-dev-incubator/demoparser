@@ -1,5 +1,5 @@
-import "demoparser/protobufs/steammessages.proto";
-import "demoparser/protobufs/engine_gcmessages.proto";
+import "steammessages.proto";
+import "engine_gcmessages.proto";
 
 option optimize_for = SPEED;
 option cc_generic_services = false;

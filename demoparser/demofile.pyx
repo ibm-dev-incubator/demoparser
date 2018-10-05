@@ -162,6 +162,8 @@ cdef class DemoFile:
 
         :emits: :ref:`user_message <event_user_msg>`
         """
+        if msg.msg_type not in self.user_messages:
+            return
         um_class = self.user_messages[msg.msg_type]
         class_name = 'CCSUsrMsg_{}'.format(um_class[6:])
 

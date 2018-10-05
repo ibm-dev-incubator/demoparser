@@ -7,7 +7,6 @@ __pycache__
 *.dem
 AUTHORS
 ChangeLog
-*_pb2.py
 *.c
 *.h
 *.so
@@ -16,3 +15,5 @@ doc/_build
 .coverage
 build
 dist
+.DS_Store
+test.py
